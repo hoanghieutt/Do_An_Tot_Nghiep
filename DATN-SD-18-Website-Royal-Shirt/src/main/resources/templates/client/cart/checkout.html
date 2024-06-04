@@ -1,0 +1,147 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{client/layout/head::head}"></head>
+
+<link rel="stylesheet" th:href="@{/client/css/cart/checkout.css}">
+
+<body>
+
+<!-- header section start -->
+<header th:replace="~{client/layout/header::header}"></header>
+<!-- header section end -->
+<!-- pages-title-start -->
+<div class="pages-title section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="pages-title-text text-center">
+                    <h2>Checkout</h2>
+                    <ul class="text-left">
+                        <li><a th:href="@{/}">Home </a></li>
+                        <li><span> // </span><a th:href="@{/cart}">Cart </a></li>
+                        <li><span> // </span>Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- pages-title-end -->
+<!-- Checkout content section start -->
+<section class="pages checkout section-padding">
+    <div class="">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="main-input single-cart-form padding60">
+                    <div class="log-title">
+                        <h3><strong>Thông tin giao hàng</strong></h3>
+                    </div>
+                    <div class="custom-input">
+                        <form action="#">
+                            <input type="text" name="username" id="username" placeholder="Họ tên"/>
+                            <input type="text" name="phone" id="phone" placeholder="Số điện thoại"/>
+                            <input type="text" name="address" id="address" placeholder="Địa chỉ cụ thể"/>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>
+                                        <select class="form-select" name="province" id="provinceSelect">
+                                            <option value=""> Chọn thành phố</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>
+                                        <select class="form-select" name="district" id="districtSelect">
+                                            <option value=""> Chọn huyện</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>
+                                        <select class="form-select" name="ward" id="wardSelect">
+                                            <option value=""> Chọn xã phường</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="custom-mess">
+                                <textarea rows="2" placeholder="Ghi chú" name="note" id="note"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="padding60">
+                    <div class="log-title">
+                        <h3><strong>Thanh toán</strong></h3>
+                    </div>
+                    <div class="cart-form-text pay-details table-responsive">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th class="product">Product</th>
+                                <th class="quantity th-quantity">Quantity</th>
+                                <th class="price">Price</th>
+                            </tr>
+                            </thead>
+                            <tbody id="listProduct">
+
+                            </tbody>
+                        </table>
+                        <table>
+                            <tr>
+                                <th>Tạm tính</th>
+                                <td id="totalPriceProducts"></td>
+                            </tr>
+                            <tr>
+                                <th>Phí ship</th>
+                                <td id="shippingFee" class="text-danger"></td>
+                            </tr>
+                            <tr>
+                                <th>Thời gian dự kiến</th>
+                                <td id="deliveryTime" class="text-danger"></td>
+                            </tr>
+                            <tfoot>
+                            <tr>
+                                <th>Tổng</th>
+                                <td id="totalPrice"></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <table>
+                            <tr>
+                                <td class="pay">
+                                    <input type="radio" name="paymentMethod" value="cod" checked>
+                                    <label>Thanh toán khi nhận hàng</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pay">
+                                    <input type="radio" name="paymentMethod" value="vnPay">
+                                    <label>VN PAY</label>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="submit-text coupon thanh-toan">
+                            <a onclick="saveOrder()" type="button" id="checkoutBtn">Thanh toán</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Checkout content section end -->
+<!-- footer section start -->
+<div th:replace="~{client/layout/footer::footer}"></div>
+<!-- footer section end -->
+
+<!-- jquery latest version -->
+<div th:replace="~{client/layout/script::script}"></div>
+<script th:src="@{/client/js/cart/checkout.js}"></script>
+</body>
+
+</html>

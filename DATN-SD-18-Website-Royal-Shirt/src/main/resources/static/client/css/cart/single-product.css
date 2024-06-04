@@ -1,0 +1,85 @@
+.price {
+    color: red;
+    font-size: 25px;
+}
+
+.material {
+    font-size: 15px;
+    color: black !important;
+    font-style: normal !important;
+}
+
+.description {
+    font-size: 15px;
+}
+
+.s-shoose {
+    display: flex; /* Sử dụng flexbox để căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    height: 100%; /* Đảm bảo chiều cao của .s-shoose là 100% */
+}
+
+/*.s-shoose h5 {*/
+/*    margin-right: 10px; !* Tạo khoảng cách giữa "Color" và select *!*/
+/*}*/
+
+.btn-group {
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+}
+
+.input-group {
+    display: flex; /* Sử dụng flexbox để căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: flex-start;
+}
+
+.input-group p {
+    margin-right: 10px; /* Tạo khoảng cách giữa "QUANTITY" và input */
+}
+
+.plus-minus {
+    display: flex; /* Sử dụng flexbox để căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-right: 10px;
+    justify-content: center;
+}
+
+.plus-minus a {
+    cursor: pointer;
+    margin: 0 5px; /* Tạo khoảng cách giữa các nút */
+}
+
+.showQuantity {
+    margin-left: 10px; /* Tạo khoảng cách với phần tử trước đó */
+    padding-left: 15px;
+}
+
+.quantity-addCart {
+    margin: 0px !important;
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+/* Ẩn các nút tăng giảm số lượng */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+#addToCartBtn {
+    width: 200px;
+    font-size: 20px;
+}
+
+.so-luong-ton {
+    font-size: 14px;
+}

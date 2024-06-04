@@ -1,0 +1,78 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{client/layout/head::head}"></head>
+
+<body>
+
+<!-- header section start -->
+<header th:replace="~{client/layout/header::header}"></header>
+<!-- header section end -->
+<!-- pages-title-start -->
+<div class="pages-title section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="pages-title-text text-center">
+                    <h2>Register</h2>
+                    <ul class="text-left">
+                        <li><a th:href="@{/}">Home </a></li>
+                        <li><span> // </span>Register</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- pages-title-end -->
+<!-- login content section start -->
+<section class="pages login-page section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="main-input padding60 new-customer">
+                    <div class="log-title">
+                        <h3><strong>Register</strong></h3>
+                    </div>
+                    <div class="custom-input">
+                        <form id="registrationForm" onsubmit="registerCustomer(); return false;">
+                            <input type="text" name="name" id="name" placeholder="Name here.." />
+                            <input type="text" name="email" id="email" placeholder="Email here.." />
+                            <input type="text" name="phone" id="phone" placeholder="Phone Number.." />
+                            <input type="password" name="password" id="password" placeholder="Password" />
+                            <div class="submit-text coupon">
+                                <button type="submit"
+                                        style="display: block; margin: 0 auto;">
+                                    REGISTER
+                                </button>
+                            </div>
+                        </form>
+                        <br>
+                        <div class="row justify-content-evenly">
+                            <div class="col-md-4">
+                                <a class="forget" th:href="@{/}">Home</a>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="forget" th:href="@{/loginPage}">Login?</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+</section>
+<!-- login content section end -->
+<!-- footer section start -->
+<div th:replace="~{client/layout/footer::footer}"></div>
+<!-- footer section end -->
+
+<!-- all js here -->
+<!-- jquery latest version -->
+<div th:replace="~{client/layout/script::script}"></div>
+<script th:src="@{/client/js/login/register.js}"></script>
+</body>
+
+</html>

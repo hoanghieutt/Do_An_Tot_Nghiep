@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{client/layout/head::head}"></head>
+<link rel="stylesheet" th:href="@{/client/css/myPages/my-order.css}">
+<body>
+
+<!-- header section start -->
+<header th:replace="~{client/layout/header::header}"></header>
+<!-- header section end -->
+<!-- pages-title-start -->
+<div class="pages-title section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="pages-title-text text-center">
+                    <h2>My Order</h2>
+                    <ul class="text-left">
+                        <li><a th:href="@{/}">Home </a></li>
+                        <li><span> // </span>Order</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- pages-title-end -->
+<!-- Checkout content section start -->
+<section class="pages checkout section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-input single-cart-form padding60">
+                    <div class="log-title">
+                        <h3 class="text-center"><strong>Đơn hàng của tôi</strong></h3>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr class="head">
+                                    <td>Mã</td>
+                                    <td>Tổng sản phẩm</td>
+                                    <td>Tổng tiền</td>
+                                    <td>Ngày mua</td>
+                                    <td>Trạng thái</td>
+                                    <td>Thao tác</td>
+                                </tr>
+                            </thead>
+                            <tbody th:if="${listOrders.empty}">
+                            <tr>
+                                <td colspan="6">Danh sách trống!</td>
+                            </tr>
+                            </tbody>
+                            <tbody>
+                                <tr class="head" th:each="o : ${listOrders}">
+                                    <td th:text="${o.id}"></td>
+                                    <td th:text="${o.orderDetails.size}"></td>
+                                    <td th:text="${#numbers.formatDecimal((o.totalPrice+o.shipCost), 0, 'POINT', 0, 'POINT')} + ' đ'"></td>
+<!--                                    <td th:text="${#dates.format(o.confirmWaitDate, 'dd/MM/yyyy HH:mm:ss')}"></td>-->
+                                    <td th:text="${#temporals.format(o.confirmWaitDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td>
+                                        <span th:switch="${o.status}">
+                                            <span th:case="1" class="badge bg-warning">Chờ xác nhận</span>
+                                            <span th:case="2" class="badge bg-primary">Xác nhận</span>
+                                            <span th:case="3" class="badge bg-secondary">Chờ vận chuyển</span>
+                                            <span th:case="4" class="badge bg-info">Đang vận chuyển</span>
+                                            <span th:case="5" class="badge bg-success">Hoàn thành</span>
+                                            <span th:case="*" class="badge bg-danger">Đã hủy</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button th:if="${o.status == 1 && o.shopping != 'VN PAY'}" class="btn btn-danger btn-sm edit" type="button"
+                                                th:attr="data-id=${o.id}"
+                                                title="Hủy" onclick="setStatusOrder(this)">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm edit" type="button"
+                                                th:attr="data-id=${o.id}"
+                                                title="Xem chi tiết" data-toggle="modal"
+                                                onclick="getOrderDetails(this)"
+                                                data-target="#showModal">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="submit-text coupon thanh-toan">
+                                <a th:href="@{/products}" type="button">Tiếp tục mua hàng</a>
+                            </div>
+                        </div>
+<!--                        <div class="col-md-6">-->
+<!--                            <div class="submit-text coupon thanh-toan">-->
+<!--                                <a onclick="" type="button" id="">Tra cứu đơn hàng</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Checkout content section end -->
+
+<!--MODAL-->
+<div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group  col-md-12">
+                        <span class="thong-tin-thanh-toan">
+                            <h5 class="text-center">Chi tiết đơn hàng</h5>
+                        </span>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>STT</td>
+                            <td>Ảnh</td>
+                            <td>Tên sản phẩm</td>
+                            <td>Màu sắc</td>
+                            <td>Size</td>
+                            <td>Giá sản phẩm</td>
+                            <td>Giá mua</td>
+                            <td>Số lượng</td>
+                            <td>Tổng tiền</td>
+                        </tr>
+                    </thead>
+                    <tbody id="orderDetailBody">
+                        <!-- Dữ liệu chi tiết đơn hàng sẽ được thêm vào đây -->
+                    </tbody>
+                </table>
+                <div class="">
+                    <span class="address">Tên người nhận: </span>
+                    <span id="username" class="total-amount"></span>
+                </div>
+                <div class="">
+                    <span class="address">Số điện thoại: </span>
+                    <span id="phone" class="total-amount"></span>
+                </div>
+                <div class="">
+                    <span class="address">Địa chỉ giao hàng: </span>
+                    <span id="address" class="total-amount"></span>
+                </div>
+                <div class="totalPriceContainer">
+                    <span class="total-label">Tiền ship: </span>
+                    <span id="shipCost" class="total-amount"></span>
+                </div>
+                <div class="totalPriceContainer">
+                    <span class="total-label">Tổng tiền: </span>
+                    <span id="totalPrice" class="total-amount"></span>
+                </div>
+                <button type="button" class="btn btn-secondary float-right"
+                        data-dismiss="modal" id="closeModal">Đóng
+                </button>
+                <BR>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL-->
+
+<!-- footer section start -->
+<div th:replace="~{client/layout/footer::footer}"></div>
+<!-- footer section end -->
+
+<!-- jQuery và Bootstrap JS -->
+<script th:replace="~{client/layout/script::script}"></script>
+<script th:src="@{/client/js/my-order/my-order.js}"></script>
+</body>
+
+</html>

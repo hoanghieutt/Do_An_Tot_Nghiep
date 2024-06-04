@@ -1,0 +1,25 @@
+.product {
+    text-align: left !important;
+}
+
+.quantity{
+    padding-left: 0px;
+    text-align: center !important;
+}
+
+.th-quantity{
+    padding-left: 0px !important;
+}
+
+.price{
+    padding-right: 30px;
+    text-align: right !important;
+}
+
+.pay {
+    text-align: left !important;
+}
+
+.thanh-toan{
+    text-align: right;
+}

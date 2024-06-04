@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<!-- Thêm thư viện SockJS và Stomp -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.0/angular-translate.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/angular-translate-loader-static-files@2.19.0/angular-translate-loader-static-files.min.js"></script>
+<script src="js/translate.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+<!-- Bạn cần bao gồm CSS của SweetAlert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Bạn cần bao gồm JavaScript của SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="stylesheet" th:href="@{/admin/css/category/category.css}">
+
+<head th:replace="admin/layout/head::head"></head>
+
+<body onload="time()" class="app sidebar-mini rtl" ng-app="myApp" ng-controller="myCtrl">
+<!-- Navbar-->
+<div th:replace="admin/layout/header::header"></div>
+<!-- Sidebar menu-->
+<div th:replace="admin/layout/sidebar::sidebar"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a th:href="@{/admin/oder}"><b>Danh sách đơn hàng</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+    <b>Loại đơn hàng:</b> &nbsp;
+    <label for="all">
+        <input style="cursor: pointer;" type="radio" id="all" name="type" value="all" ng-click="getType(0)"
+               checked>Tất cả
+    </label>
+    <label for="online">
+        <input style="cursor: pointer;" type="radio" id="online" name="type" ng-click="getType(1)"
+               value="online">Online
+    </label>
+    <label for="counter">
+        <input style="cursor: pointer;" type="radio" id="counter" name="type" ng-click="getType(2)"
+               value="counter">Tại quầy
+    </label>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="home" aria-selected="true" ng-click="getStatusAndType(0)">
+                Tất cả
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+
+            <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="home" aria-selected="true" ng-click="getStatusAndType(1)">
+                Chờ xác nhận
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="profile" aria-selected="false" ng-click="getStatusAndType(2)">
+                Xác nhận
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="messages" aria-selected="false" ng-click="getStatusAndType(3)">
+                Chờ giao hàng
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="messages" aria-selected="false" ng-click="getStatusAndType(4)">
+                Giao hàng
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="messages" aria-selected="false" ng-click="getStatusAndType(5)">
+                Hoàn thành
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="messages" aria-selected="false" ng-click="getStatusAndType(6)">
+                Đã hủy
+            </button>
+        </li>
+    </ul>
+
+    <!-- Nav tabs -->
+
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile" id="allTable">
+                        <div class="tile-body">
+
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="sampleTable_length"><label>Hiện danh mục
+                                        <select name="sampleTable_length" aria-controls="sampleTable"
+                                                class="form-control form-control-sm">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> </label></div>
+                                </div>
+                                <div class="col-sm-12 col-md-3 offset-md-3">
+                                    <div id="sampleTable_filter" class="dataTables_filter"><label>Tìm kiếm:<input
+                                            type="search" style="border: 1px solid gray;"
+                                            class="form-control-sm" placeholder="" aria-controls="sampleTable"
+                                            ng-model="keyword" ng-change="search()">
+                                    </label></div>
+                                </div>
+                            </div>
+                            <center ng-show="orders.length==0">
+                                Không có đơn hàng nào phù hợp!!!
+                            </center>
+                            <table id="sampleTable" ng-hide="orders.length == 0"
+                                   class="table table-hover table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên khách hàng</th>
+                                    <th>Ngày tạo</th>
+                                    <th>SDT</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Loại đơn</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="order in orders.slice(getStartIndex(), getEndIndex())">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{order.customer.name}}</td>
+                                    <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                                    <td>
+                                        <span ng-if="order.type" >{{order.phone}}</span>
+                                        <span ng-if="!order.type">{{order.customer.phone}}</span>
+                                    </td>
+                                    <td>{{(order.totalPrice+order.shipCost ).toLocaleString('vi-VN')}} VNĐ</td>
+                                    <td>
+                                        <span ng-if="order.type" class="badge bg-success">Online</span>
+                                        <span ng-if="!order.type" class="badge bg-info">Tại quầy</span>
+                                    </td>
+                                    <td>
+                                        <span ng-if="order.status == 1">Chờ xác nhận</span>
+                                        <span ng-if="order.status == 2">Xác nhận</span>
+                                        <span ng-if="order.status == 3">Chờ giao hàng</span>
+                                        <span ng-if="order.status == 4">Giao hàng</span>
+                                        <span ng-if="order.status == 5">Hoàn thành</span>
+                                        <span ng-if="order.status == 6">Đã hủy</span>
+                                    </td>
+                                    <td>
+                                        <a ng-href="/admin/oder/order-detail/{{order.id}}"><button
+                                                class="btn btn-success"><i
+                                                class="fa-regular fa-eye"></i></button></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="pagination">
+                                <button style="border: none;" ng-disabled="currentPage == 1"
+                                        ng-click="goToPage(currentPage - 1)">Previous</button>
+                                <button ng-repeat="page in pages" ng-click="goToPage(page)"
+                                        ng-class="{ 'active': currentPage == page }">{{ page }}</button>
+                                <button style="border: none;" ng-disabled="currentPage == totalPages"
+                                        ng-click="goToPage(currentPage + 1)">Next</button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+<!-- Essential javascripts for application to work-->
+<script src="/admin/doc/js/jquery-3.2.1.min.js"></script>
+<script src="/admin/doc/js/popper.min.js"></script>
+<script src="/admin/doc/js/bootstrap.min.js"></script>
+<script src="/admin/doc/js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="/admin/doc/js/plugins/pace.min.js"></script>
+<!-- Data table plugin-->
+<!-- <script type="text/javascript" src="/admin/doc/js/plugins/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/admin/doc/js/plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">$('#sampleTable').DataTable();</script> -->
+<script>
+    var app = angular.module("myApp", []);
+    app.controller('myCtrl', function ($scope, $http, $window, $rootScope) {
+        var Url = "http://localhost:8080";
+        var orderUrl = "http://localhost:8080/admin/rest/order";
+        $scope.orders = [];
+        $scope.orderstmp = [];
+        $scope.type = 0;
+        $scope.status = 0;
+        $scope.pageSize = 10; // Số lượng mục trên mỗi trang
+        $scope.currentPage = 1; // Trang hiện tại
+        $scope.totalPages = 0;
+        $scope.pages = Array.from({ length: $scope.totalPages }, (_, i) => i + 1);
+
+        $scope.getStartIndex = function () {
+            return ($scope.currentPage - 1) * $scope.pageSize;
+        };
+
+        $scope.getEndIndex = function () {
+            return $scope.getStartIndex() + $scope.pageSize;
+        };
+
+        $scope.getAllOrder = function (orderID) {
+            $http.get(orderUrl + "/get-all-order")
+                .then(function (response) {
+                    $scope.orders = response.data;
+                    $scope.orderstmp = response.data;
+                    $scope.totalPages = Math.ceil($scope.orders.length / $scope.pageSize);
+                }).catch(function (error) {
+                console.error("Lỗi: " + error.data);
+            });
+        }
+        $scope.getAllOrder();
+        $scope.goToPage = function (page) {
+
+            $scope.currentPage = page;
+        };
+
+        $scope.getType = function (type) {
+            $scope.type = type;
+            if (type == 0 && $scope.status == 0) {
+                $scope.getAllOrder();
+                return;
+            }
+            if ($scope.status == 0 && $scope.type != 0) {
+                $http.get(orderUrl + "/get-by-type/" + type)
+                    .then(function (response) {
+                        $scope.orders = response.data;
+                    }).catch(function (error) {
+                    console.error("Lỗi: " + error.data);
+                });
+            } else {
+                $scope.getStatusAndType($scope.status);
+            }
+
+        }
+        // Hàm tìm kiếm dựa trên customer.id
+        $scope.search = function () {
+            var keyword = $scope.keyword;
+            $scope.temp = [];
+            angular.forEach($scope.orderstmp, function (order) {
+                if (order.customer.name.toLowerCase().includes(keyword)) {
+                    $scope.temp.push(order);
+                }
+            });
+            $scope.orders = $scope.temp;
+        };
+
+        $scope.getStatus = function (status) {
+            $scope.status = status;
+            if ($scope.status == 0 && $scope.type == 0) {
+                $scope.getAllOrder();
+
+            } else if ($scope.status != 0 && $scope.type == 0) {
+                $http.get(orderUrl + "/get-by-status/" + status)
+                    .then(function (response) {
+                        $scope.orders = response.data;
+                    }).catch(function (error) {
+                    console.error("Lỗi: " + error.data);
+                });
+            } else {
+                $scope.getStatusAndType(status);
+            }
+
+        }
+        $scope.getStatusAndType = function (status) {
+            $scope.status = status;
+            if ($scope.type == 0) {
+                $scope.getStatus(status);
+                return;
+            }
+            if (status == 0) {
+                $scope.getType($scope.type);
+            }
+            $http.get(orderUrl + "/get-by-status-type/" + status + "/" + $scope.type)
+                .then(function (response) {
+                    $scope.orders = response.data;
+                }).catch(function (error) {
+                console.error("Lỗi: " + error.data);
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

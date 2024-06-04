@@ -1,0 +1,288 @@
+.Choicefile {
+    display: block;
+    background: #14142B;
+    border: 1px solid #fff;
+    color: #fff;
+    width: 150px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 0px;
+    border-radius: 5px;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+}
+
+.Choicefile:hover {
+    text-decoration: none;
+    color: white;
+}
+
+#uploadfile,
+.removeimg {
+    display: none;
+}
+
+#thumbbox {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.removeimg {
+    height: 25px;
+    position: absolute;
+    background-repeat: no-repeat;
+    top: 5px;
+    left: 5px;
+    background-size: 25px;
+    width: 25px;
+    /* border: 3px solid red; */
+    border-radius: 50%;
+
+}
+
+.removeimg::before {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    content: '';
+    border: 1px solid red;
+    background: red;
+    text-align: center;
+    display: block;
+    margin-top: 11px;
+    transform: rotate(45deg);
+}
+
+.removeimg::after {
+    /* color: #FFF; */
+    /* background-color: #DC403B; */
+    content: '';
+    background: red;
+    border: 1px solid red;
+    text-align: center;
+    display: block;
+    transform: rotate(-45deg);
+    margin-top: -2px;
+}
+
+#thumbbox {
+    overflow: auto;
+}
+
+.image-item {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.thumbimage {
+    max-width: 150px;
+    max-height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.image-product-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+.removeimg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #fff;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tile {
+    margin-bottom: 0;
+}
+
+.icon-button {
+    color: #0091ff;
+    transition: color 0.3s;
+    font-size: 45px;
+}
+
+.icon-button:hover {
+    color: #0066cc;
+}
+
+.thead_tr, .tfoot_tr {
+    background-color: #ef5e1e;
+    color: white;
+}
+
+.custom-switch .custom-control-input:checked + .custom-control-label::before {
+    background-color: #00bb00;
+}
+
+.stt, .anh, .mau_sac, .kich_thuoc, .so_luong, .gia_ban, .tinh_nang {
+    text-align: center;
+}
+
+.stt {
+    width: 20px;
+}
+
+.ten_san_pham {
+    width: 150px;
+    text-align: left;
+}
+
+.anh {
+    width: 80px;
+}
+
+.mau_sac {
+    width: 70px;
+}
+
+.kich_thuoc {
+    width: 70px;
+}
+
+.so_luong {
+    width: 100px;
+}
+
+.gia_ban {
+    width: 130px;
+}
+
+.tinh_nang {
+    width: 80px;
+}
+
+.anh img {
+    width: 50px;
+    height: 70px;
+}
+
+input:checked + .slider {
+    background-color: #32ff32;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.modal-header {
+    border-bottom: 1px solid #ccc;
+}
+
+#gia_ban::after {
+    content: attr(data-raw-value) " VNĐ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+.add-button {
+    border: none;
+    margin: 0px 0px 0px 0px !important;
+    background-color: rgb(166 236 171);
+}
+
+.add-button:hover {
+    background-color: rgb(120 200 120);
+}
+
+.add-icon {
+    color: #3c3c3c;
+}
+
+#sampleTable_filter {
+    display: none;
+}
+
+.cart {
+    margin-bottom: 25px;
+}
+
+.input_so_luong {
+    width: 70px;
+    text-align: center;
+    border: 1px solid;
+    border-radius: 10px;
+}
+
+.tile {
+    margin-bottom: 20px;
+    /*padding: 5px;*/
+}
+
+.tile-counter {
+    padding: 5px;
+}
+
+.btn-add-counter, .btn-add-order {
+    margin: 0px;
+    height: 50px;
+}
+
+.btn-add-counter {
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+.btn-add-order {
+    margin-right: 5px;
+}
+
+.btn-active {
+    background-color: #28a745; /* Màu sắc khi button active */
+    color: #fff; /* Màu chữ khi button active */
+}
+
+#tong-cong-thanh-toan::after, #tra-lai-khach::after, #khach-hang-con-thieu::after {
+    content: attr(data-raw-value) " VNĐ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+#tong-cong-thanh-toan::before {
+    content: attr(data-raw-value) "= ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+#tra-lai-khach::before {
+    content: attr(data-raw-value) "= ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+#khach-hang-con-thieu::before {
+    content: attr(data-raw-value) "= ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+#tra-lai-khach {
+    color: #ffa702;
+}
+
+.selectize-input {
+    height: 45px;
+    display: flex;
+}
+
+.item {
+    align-self: center;
+}
+
+.btn-them {
+    margin-left: 5px;
+}

@@ -1,0 +1,734 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+<!-- Bạn cần bao gồm CSS của SweetAlert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Bạn cần bao gồm JavaScript của SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="stylesheet" th:href="@{/admin/css/category/category.css}">
+
+<head th:replace="admin/layout/head::head"></head>
+
+<body onload="time()" class="app sidebar-mini rtl">
+<!-- <script>
+    var app = angular
+        .module("myApp", [])
+        .filter("currencyFormat", function () {
+            return function (number) {
+                return number.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                });
+            };
+        });
+    app.controller('myCtrl', function ($scope, $http) {
+        alert("ok")
+    });
+
+</script> -->
+<!-- Navbar-->
+<div th:replace="admin/layout/header::header"></div>
+<!-- Sidebar menu-->
+<div th:replace="admin/layout/sidebar::sidebar"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Danh sách địa chỉ của: </b><span
+                    th:text="${customer.name}"></span></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+
+                    <div class="row element-button">
+                        <div class="col-sm-2">
+                            <a class="btn btn-add btn-sm addAddr" th:attr="data-id=${customer.id}"
+                               data-bs-toggle="modal" data-bs-target="#modalId" title="Thêm"><i
+                                    class="fas fa-plus"></i>
+                                Tạo mới địa chỉ</a>
+                        </div>
+                        <div class="col-sm-2 offset-8">
+                            <a class="btn btn-primary btn-sm addAddr" th:href="@{/admin/customers}">
+                                Quản lí người dùng</a>
+                        </div>
+
+
+                        <table class="table table-hover table-bordered js-copytextarea" cellpadding="0"
+                               cellspacing="0" border="0" id="sampleTable">
+                            <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Số điện thoại</th>
+                                <th >Xã/Phường</th>
+                                <th >Quận/Huyện</th>
+                                <th>Tỉnh/Thành phố</th>
+                                <th>Địa chỉ cụ thể</th>
+                                <!-- <th>Địa chỉ</th> -->
+                                <th>Trạng thái</th>
+                                <th>Tính năng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Duyệt danh sách khách hàng và hiển thị từng dòng -->
+                            <tr th:each="obj,stat : ${customer.listAddresses}">
+                                <th width="10" th:text="${stat.index + 1}"></th>
+                                <td th:text="${obj.phone}"></td>
+                                <td th:text="${obj.ward}"></td>
+                                <td th:text="${obj.district}"></td>
+                                <td th:text="${obj.city}"></td>
+
+                                <td th:text="${obj.fullAddress}"></td>
+                                <!-- <td th:text="${obj.fullAddress}"></td> -->
+                                <td>
+                                            <span th:text="${obj.status == 0 ? 'Mặc định' : 'Địa chỉ
+                                            khác'}"></span>
+                                </td>
+
+
+                                <!-- <td th:text="${#dates.format(obj.createDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                        <td th:text="${#dates.format(obj.updateDate, 'dd/MM/yyyy HH:mm:ss')}"></td> -->
+                                <td class="table-td-center">
+                                    <button class="btn btn-primary btn-sm trash deleteAddress"
+                                            th:attr="data-customerId=${customer.id}, data-addressId=${obj.id}"
+                                            title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <a class="btn btn-primary btn-sm edit viewAddressBtn" data-toggle="modal"
+                                       data-target="#cus"
+                                       th:attr="data-id=${obj.id},data-ward=${obj.ward},data-district=${obj.district},data-city=${obj.city},
+                                    data-status=${obj.status},data-fulladdress=${obj.fullAddress},data-phone=${obj.phone},data-customerid=${customer.id}"
+                                       title="Sửa" id="show-emp"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-sm defaultAddress"
+                                       th:attr="data-id=${obj.id}, data-customerid=${customer.id}">
+                                        <i class="fa-solid fa-location-dot" style="color: #141415;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+
+<div class="modal fade" id="customerModalAdrr" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="addressList" class="list-group mt-3">
+                    <!-- Danh sách địa chỉ sẽ được thêm tự động bởi JavaScript -->
+                </ul>
+                <hr>
+                <center><b>Thêm địa chỉ</b></center>
+                <form id="addAddressForm" action="#" th:action="@{/admin/customers/addAddress}"
+                      th:object="${newCustomerAdrr}" method="post">
+                    <div class="form-group">
+                        <label for="name">Mã khách hàng:</label>
+                        <input readonly type="text" id="customerId" class="form-control" th:field="*{customer.id}"
+                               required>
+                    </div>
+                    <label for="provinceSelect">Chọn tỉnh/thành phố:</label>
+                    <select class="form-control" id="provinceSelect">
+                        <option value="">Chọn tỉnh/thành phố</option>
+                    </select>
+                    <label for="districtSelect">Chọn huyện/quận:</label>
+                    <select class="form-control" id="districtSelect">
+                        <option value="">Chọn huyện/quận</option>
+                    </select>
+                    <label for="wardSelect">Chọn xã/phường:</label>
+                    <select class="form-control" id="wardSelect">
+                        <option value="">Chọn xã/phường</option>
+                    </select>
+
+                    <input hidden id="ward" th:field="*{ward}" type="text">
+                    <input hidden id="district" th:field="*{district}" type="text">
+                    <input hidden id="city" th:field="*{city}" type="text">
+
+                    <div class="form-group">
+                        <label for="city">Địa chỉ cụ thể:</label>
+                        <input type="text" th:field="*{fullAddress}" class="form-control" id="fullAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Số điện thoại người nhận:</label>
+                        <input type="text" th:field="*{phone}" class="form-control" id="phone" required>
+                    </div>
+                    <input hidden type="text" class="form-control" th:field="*{status}" value="0">
+                    <button type="button" id="confirmAddAddress" class="btn btn-primary">Thêm
+                        địa chỉ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAddressForm" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="addressList" class="list-group mt-3">
+                    <!-- Danh sách địa chỉ sẽ được thêm tự động bởi JavaScript -->
+                </ul>
+                <hr>
+                <center><b>Cập nhật địa chỉ</b></center>
+                <form id="addEditAddressForm" action="#" th:action="@{/admin/customers/editAddress}"
+                      th:object="${editCustomerAdrr}" method="post">
+                    <div class="form-group">
+                        <label for="name">Mã khách hàng:</label>
+                        <input readonly type="text" id="editcustomerid" class="form-control"
+                               th:field="*{customer.id}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Mã địa chỉ:</label>
+                        <input readonly type="text" id="editAdressId" class="form-control" th:field="*{id}"
+                               required>
+                    </div>
+
+                    <label for="provinceSelect">Chọn tỉnh/thành phố:</label>
+                    <select class="form-control" id="editprovinceSelect">
+                        <option value="">Chọn tỉnh/thành phố</option>
+                    </select>
+                    <label for="districtSelect">Chọn huyện/quận:</label>
+                    <select class="form-control" id="editdistrictSelect">
+                        <option value="">Chọn huyện/quận</option>
+                    </select>
+                    <label for="editwardSelect">Chọn xã/phường:</label>
+                    <select class="form-control" id="editwardSelect">
+                        <option value="">Chọn xã/phường</option>
+                    </select>
+                    <span>Địa chỉ: <span id="editward" th:text="${ward}"></span> |
+                            <span id="editdistrict" th:text="${district}"></span> |
+                            <span id="editcity" th:text="${city}"></span>
+                        </span>
+
+                    <input hidden id="editwardip" th:field="*{ward}" type="text">
+                    <input hidden id="editdistrictip" th:field="*{district}" type="text">
+                    <input hidden id="editcityip" th:field="*{city}" type="text">
+
+                    <div class="form-group">
+                        <label for="city">Địa chỉ cụ thể:</label>
+                        <input type="text" th:field="*{fullAddress}" class="form-control" id="editfullAddress"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Số điện thoại người nhận:</label>
+                        <input type="text" th:field="*{phone}" class="form-control" id="editphone" required>
+                    </div>
+                    <input hidden type="text" class="form-control" th:field="*{status}" value="0">
+                    <button type="button" id="confirmEditAddress" class="btn btn-primary confirmEditAddress">Cập
+                        nhật
+                        địa chỉ</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script to show modal and populate customer details -->
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('.addAddr').click(function () {
+            var customerId = $(this).data('id');
+            $('#customerId').val(customerId);
+            $('#customerModalAdrr').modal('show');
+        });
+        $('.defaultAddress').click(function () {
+            var id = $(this).data('id');
+            var customerId = $(this).data('customerid');
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn cài làm địa chỉ mặc định?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng xác nhận, thực hiện submit form
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thông tin khách hàng đã được thêm thành công!'
+                    }).then(() => {
+                        setTimeout(function () {
+
+                            window.location.href = '/admin/customers/changeAddress/' + customerId + '/' + id;
+                        }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#confirmAddAddress').on('click', function () {
+            var city = $('#provinceSelect option:selected').text();
+            var district = $('#districtSelect option:selected').text();
+            var ward = $('#wardSelect option:selected').text();
+
+            // Kiểm tra xem các trường đã được điền đầy đủ chưa
+            if (city.trim() === 'Chọn tỉnh/thành phố' || district.trim() === 'Chọn huyện/quận' || ward.trim() === 'Chọn xã/phường') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Vui lòng điền đầy đủ thông tin địa chỉ!'
+                });
+                return; // Không làm gì nếu các trường bắt buộc chưa được điền đầy đủ
+            }
+            const phone = document.getElementById('phone').value;
+            if (phone === '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Vui lòng điền số điện thoại!'
+                });
+                return;
+            }
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn thêm địa chỉ này?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng xác nhận, thực hiện submit form
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thông tin khách hàng đã được thêm thành công!'
+                    }).then(() => {
+                        setTimeout(function () {
+
+                            $('#addAddressForm').submit(); // Submit form khi người dùng nhấp vào OK
+                        }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                    });
+
+                }
+            });
+
+        });
+
+        $('#confirmEditAddress').on('click', function () {
+            var city = $('#editprovinceSelect option:selected').text();
+            var district = $('#editdistrictSelect option:selected').text();
+            var ward = $('#editwardSelect option:selected').text();
+            // Kiểm tra xem các trường đã được điền đầy đủ chưa
+            if (city.trim() === 'Chọn tỉnh/thành phố' || district.trim() === 'Chọn huyện/quận' || ward.trim() === 'Chọn xã/phường') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Vui lòng điền đầy đủ thông tin địa chỉ!'
+                });
+                return; // Không làm gì nếu các trường bắt buộc chưa được điền đầy đủ
+            }
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn cập nhật địa chỉ này?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng xác nhận, thực hiện submit form
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Thông tin địa chỉ đã được cập nhật thành công!'
+                    }).then(() => {
+                        setTimeout(function () {
+
+                            $('#addEditAddressForm').submit(); // Submit form khi người dùng nhấp vào OK
+                        }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                    });
+
+                }
+            });
+
+        });
+
+        $('.viewAddressBtn').click(function () {
+            var addressId = $(this).data('id');
+            var customerid = $(this).data('customerid');
+            var ward = $(this).data('ward');
+            var district = $(this).data('district');
+            var city = $(this).data('city');
+            var status = $(this).data('status');
+            var fullAddress = $(this).data('fulladdress');
+            var phone = $(this).data('phone');
+            // Tương tự như cách bạn lấy dữ liệu cho customer, bạn có thể thực hiện với address
+            // Đặt các giá trị vào các trường tương ứng trong modal
+            $('#editAdressId').val(addressId);
+            $('#editward').text(ward);
+            $('#editdistrict').text(district);
+            $('#editcity').text(city);
+            $('#editstatus').val(status);
+            $('#editfullAddress').val(fullAddress);
+            $('#editphone').val(phone);
+            $('#editcustomerid').val(customerid);
+            // Hiển thị modal
+            $('#editAddressForm').modal('show');
+        });
+
+    });
+</script>
+<script>
+    // Gọi API của Giao hàng nhanh để lấy danh sách tỉnh
+    fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Token': 'a70eedc6-d3e5-11ee-9414-ce214539f696' // Thay YOUR_GHN_API_TOKEN bằng mã API của bạn
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Xử lý dữ liệu trả về
+            console.log(data);
+            // Lặp qua mảng dữ liệu và tạo các option element
+            const selectElement = document.getElementById('provinceSelect');
+            const editselectElement = document.getElementById('editprovinceSelect');
+            data.data.forEach(province => {
+                const option = document.createElement('option');
+                option.text = province.ProvinceName; // Sử dụng tên tỉnh/thành phố làm nội dung của option
+                option.value = province.ProvinceID; // Sử dụng ID của tỉnh/thành phố làm giá trị của option
+                selectElement.appendChild(option); // Thêm option vào select
+
+            });
+            data.data.forEach(province => {
+                const option = document.createElement('option');
+                option.text = province.ProvinceName; // Sử dụng tên tỉnh/thành phố làm nội dung của option
+                option.value = province.ProvinceID; // Sử dụng ID của tỉnh/thành phố làm giá trị của option
+                editselectElement.appendChild(option); // Thêm option vào select
+
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    var urlDistrict = "https://online-gateway.ghn.vn/shiip/public-api/master-data/district";
+
+    // Dữ liệu yêu cầu
+    const requestData = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Token': 'a70eedc6-d3e5-11ee-9414-ce214539f696'
+        }
+    };
+
+    // Hàm lấy danh sách huyện/quận
+    function getDistricts(provinceId) {
+        // Thêm query string để chỉ định tỉnh/thành phố cụ thể
+        const urlWithParams = `${urlDistrict}?province_id=${provinceId}`;
+        // Gọi API để lấy danh sách huyện/quận
+        fetch(urlWithParams, requestData)
+            .then(response => response.json())
+            .then(data => {
+                // Xử lý dữ liệu trả về
+                console.log(data);
+                // Lấy dropdown element từ DOM
+                const districtSelect = document.getElementById('districtSelect');
+
+                // Xóa tất cả các option cũ trong dropdown
+                districtSelect.innerHTML = '';
+
+                // Tạo option mặc định
+                const defaultOption = document.createElement('option');
+                defaultOption.text = 'Chọn huyện/quận';
+                defaultOption.value = '';
+                districtSelect.appendChild(defaultOption);
+                // Lặp qua danh sách huyện/quận và thêm vào dropdown
+                data.data.forEach(district => {
+                    const option = document.createElement('option');
+                    option.text = district.DistrictName;
+                    option.value = district.DistrictID;
+                    districtSelect.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function getDistricts2(provinceId) {
+        // Thêm query string để chỉ định tỉnh/thành phố cụ thể
+        const urlWithParams = `${urlDistrict}?province_id=${provinceId}`;
+        // Gọi API để lấy danh sách huyện/quận
+        fetch(urlWithParams, requestData)
+            .then(response => response.json())
+            .then(data => {
+                // Xử lý dữ liệu trả về
+                console.log(data);
+                // Lấy dropdown element từ DOM
+                const districtSelect = document.getElementById('editdistrictSelect');
+
+                // Xóa tất cả các option cũ trong dropdown
+                districtSelect.innerHTML = '';
+
+                // Tạo option mặc định
+                const defaultOption = document.createElement('option');
+                defaultOption.text = 'Chọn huyện/quận';
+                defaultOption.value = '';
+                districtSelect.appendChild(defaultOption);
+                // Lặp qua danh sách huyện/quận và thêm vào dropdown
+                data.data.forEach(district => {
+                    const option = document.createElement('option');
+                    option.text = district.DistrictName;
+                    option.value = district.DistrictID;
+                    districtSelect.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function getWards(districtId) {
+        const urlWithParams = `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtId}`;
+
+        fetch(urlWithParams, requestData)
+            .then(response => response.json())
+            .then(data => {
+                // Xử lý dữ liệu trả về
+                console.log(data);
+
+                // Lấy dropdown element từ DOM
+                const wardSelect = document.getElementById('wardSelect');
+
+                // Xóa tất cả các option cũ trong dropdown
+                wardSelect.innerHTML = '';
+
+                // Tạo option mặc định
+                const defaultOption = document.createElement('option');
+                defaultOption.text = 'Chọn xã/phường';
+                defaultOption.value = '';
+                wardSelect.appendChild(defaultOption);
+
+                // Lặp qua danh sách xã/phường và thêm vào dropdown
+                data.data.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.text = ward.WardName;
+                    option.value = ward.WardID;
+                    wardSelect.appendChild(option);
+                });
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function getWards2(districtId) {
+        const urlWithParams = `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtId}`;
+
+        fetch(urlWithParams, requestData)
+            .then(response => response.json())
+            .then(data => {
+                // Xử lý dữ liệu trả về
+                console.log(data);
+
+                // Lấy dropdown element từ DOM
+                const wardSelect = document.getElementById('editwardSelect');
+
+                // Xóa tất cả các option cũ trong dropdown
+                wardSelect.innerHTML = '';
+
+                // Tạo option mặc định
+                const defaultOption = document.createElement('option');
+                defaultOption.text = 'Chọn xã/phường';
+                defaultOption.value = '';
+                wardSelect.appendChild(defaultOption);
+
+                // Lặp qua danh sách xã/phường và thêm vào dropdown
+                data.data.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.text = ward.WardName;
+                    option.value = ward.WardID;
+                    wardSelect.appendChild(option);
+                });
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Lấy select element của tỉnh/thành phố từ DOM
+    const provinceSelect = document.getElementById('provinceSelect');
+    // Gắn sự kiện 'change' vào dropdown tỉnh/thành phố
+    provinceSelect.addEventListener('change', function () {
+        const selectedProvinceId = this.value; // Lấy giá trị (id) của tỉnh/thành phố được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedProvinceName = selectedOption.textContent;
+        document.getElementById('city').value = selectedProvinceName;
+        if (selectedProvinceId) { // Kiểm tra nếu tỉnh/thành phố đã được chọn
+            getDistricts(selectedProvinceId); // Gọi hàm để lấy danh sách huyện/quận
+        }
+    });
+
+    // Lấy select element của huyện/quận phố từ DOM
+    const districtSelect = document.getElementById('districtSelect');
+    // Gắn sự kiện 'change' vào dropdown huyện/quận
+    districtSelect.addEventListener('change', function () {
+        const districtSelect = this.value; // Lấy giá trị (id) của huyện/quận được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedProvinceName = selectedOption.textContent;
+        document.getElementById('district').value = selectedProvinceName;
+
+        if (districtSelect) { // Kiểm tra nếu tỉnh/thành phố đã được chọn
+            getWards(districtSelect); // Gọi hàm để lấy danh sách huyện/quận
+        }
+    });
+
+    // Lấy select element của huyện/quận phố từ DOM
+    const wardSelect = document.getElementById('wardSelect');
+    // Gắn sự kiện 'change' vào dropdown huyện/quận
+    wardSelect.addEventListener('change', function () {
+        const wardSelect = this.value; // Lấy giá trị (id) của huyện/quận được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedWardName = selectedOption.textContent;
+        document.getElementById('ward').value = selectedWardName;
+    });
+
+    // -----------------------------------------------------------------------------
+
+    const editprovinceSelect = document.getElementById('editprovinceSelect');
+
+    editprovinceSelect.addEventListener('change', function () {
+
+        const selectedProvinceId = this.value; // Lấy giá trị (id) của tỉnh/thành phố được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedProvinceName = selectedOption.textContent;
+        document.getElementById('editcity').textContent = selectedProvinceName;
+        document.getElementById('editcityip').value = selectedProvinceName;
+        if (selectedProvinceId) { // Kiểm tra nếu tỉnh/thành phố đã được chọn
+            getDistricts2(selectedProvinceId); // Gọi hàm để lấy danh sách huyện/quận
+        }
+    });
+
+    // Lấy select element của huyện/quận phố từ DOM
+    const editdistrictSelect = document.getElementById('editdistrictSelect');
+    // Gắn sự kiện 'change' vào dropdown huyện/quận
+    editdistrictSelect.addEventListener('change', function () {
+        const districtSelect = this.value; // Lấy giá trị (id) của huyện/quận được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedProvinceName = selectedOption.textContent;
+        document.getElementById('editdistrict').textContent = selectedProvinceName;
+        document.getElementById('editdistrictip').value = selectedProvinceName;
+        if (districtSelect) { // Kiểm tra nếu tỉnh/thành phố đã được chọn
+            getWards2(districtSelect); // Gọi hàm để lấy danh sách huyện/quận
+        }
+    });
+
+    // Lấy select element của huyện/quận phố từ DOM
+    const editwardSelect = document.getElementById('editwardSelect');
+    // Gắn sự kiện 'change' vào dropdown huyện/quận
+    editwardSelect.addEventListener('change', function () {
+        const wardSelect = this.value; // Lấy giá trị (id) của huyện/quận được chọn
+        const selectedOption = this.selectedOptions[0];
+        const selectedWardName = selectedOption.textContent;
+        document.getElementById('editward').textContent = selectedWardName;
+        document.getElementById('editwardip').value = selectedWardName;
+    });
+
+    $('.deleteAddress').click(function () {
+        var customerId = $(this).attr('data-customerId');
+        var addressId = $(this).attr('data-addressId');
+        // Hiển thị hộp thoại xác nhận cập nhật
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn xóa địa chỉ của khách hàng này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng xác nhận, thực hiện submit form
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Địa chỉ khách hàng đã được xóa thành công!'
+                }).then(() => {
+                    setTimeout(function () {
+                        // Tạo một thẻ <a>
+                        var removeLink = document.createElement('a');
+                        removeLink.style.display = 'none'; // Ẩn thẻ <a>
+
+                        // Thiết lập thuộc tính href cho thẻ <a>
+                        removeLink.setAttribute('href', '/admin/customers/removeAddress/' + customerId + '/' + addressId);
+
+                        // Thêm thẻ <a> vào body của trang web
+                        document.body.appendChild(removeLink);
+
+                        // Tự động chuyển hướng khi nhấp vào thẻ <a>
+                        removeLink.click();
+
+                    }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                });
+            }
+        });
+    });
+
+
+</script>
+
+<!--
+MODAL
+-->
+<!-- Essential javascripts for application to work-->
+<script src="/admin/doc/js/jquery-3.2.1.min.js"></script>
+<script src="/admin/doc/js/popper.min.js"></script>
+<script src="/admin/doc/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/admin/doc/js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="/admin/doc/js/plugins/pace.min.js"></script>
+<!-- Page specific javascripts-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<!-- Data table plugin-->
+<script type="text/javascript" src="/admin/doc/js/plugins/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/admin/doc/js/plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+</body>
+
+</html>

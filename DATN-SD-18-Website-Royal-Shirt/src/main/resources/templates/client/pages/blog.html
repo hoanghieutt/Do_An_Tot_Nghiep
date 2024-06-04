@@ -1,0 +1,308 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{client/layout/head::head}"></head>
+<body>
+
+<!-- header section start -->
+<header th:replace="~{client/layout/header::header}"></header>
+<!-- header section end -->
+<!-- pages-title-start -->
+<div class="pages-title section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="pages-title-text text-center">
+                    <h2>Blog Style Two</h2>
+                    <ul class="text-left">
+                        <li><a th:href="@{/}">Home </a></li>
+                        <li><span> // </span><a th:href="@{/blog}">Blog </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- pages-title-end -->
+<!-- blog section start -->
+<section class="latest-blog blog-style section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-lg-3 order-2 order-lg-1">
+                <div class="sidebar left-sidebar">
+                    <div class="s-side-text">
+                        <div class="sidebar-title clearfix">
+                            <h4 class="floatleft">Categories</h4>
+                            <h5 class="floatright"><a href="#">All</a></h5>
+                        </div>
+                        <div class="categories left-right-p">
+                            <ul id="accordion" class="panel-group clearfix">
+                                <li class="panel">
+                                    <div data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                        <div class="medium-a">
+                                            Women
+                                        </div>
+                                    </div>
+                                    <div class="panel-collapse collapse show" id="collapse1" data-bs-parent="#accordion">
+                                        <div class="normal-a">
+                                            <a href="#">Men Bag</a>
+                                            <a href="#">Shoes</a>
+                                            <a href="#">Watch</a>
+                                            <a href="#">T-shirt</a>
+                                            <a href="#">shirt</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="panel">
+                                    <div data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                        <div class="medium-a">
+                                            Fashion
+                                        </div>
+                                    </div>
+                                    <div class="paypal-dsc panel-collapse collapse" id="collapse2" data-bs-parent="#accordion">
+                                        <div class="normal-a">
+                                            <a href="#">Men Bag</a>
+                                            <a href="#">Shoes</a>
+                                            <a href="#">Watch</a>
+                                            <a href="#">T-shirt</a>
+                                            <a href="#">shirt</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="panel">
+                                    <div data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                        <div class="medium-a">
+                                            Accessories
+                                        </div>
+                                    </div>
+                                    <div class="paypal-dsc panel-collapse collapse" id="collapse3" data-bs-parent="#accordion">
+                                        <div class="normal-a">
+                                            <a href="#">Men Bag</a>
+                                            <a href="#">Shoes</a>
+                                            <a href="#">Watch</a>
+                                            <a href="#">T-shirt</a>
+                                            <a href="#">shirt</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="panel">
+                                    <div data-bs-toggle="collapse" data-bs-target="#collapse4">
+                                        <div class="medium-a">
+                                            Top Brands
+                                        </div>
+                                    </div>
+                                    <div class="paypal-dsc panel-collapse collapse" id="collapse4" data-bs-parent="#accordion">
+                                        <div class="normal-a">
+                                            <a href="#">Men Bag</a>
+                                            <a href="#">Shoes</a>
+                                            <a href="#">Watch</a>
+                                            <a href="#">T-shirt</a>
+                                            <a href="#">shirt</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="panel">
+                                    <div data-bs-toggle="collapse" data-bs-target="#collapse5">
+                                        <div class="medium-a">
+                                            Jewelry
+                                        </div>
+                                    </div>
+                                    <div class="paypal-dsc panel-collapse collapse" id="collapse5" data-bs-parent="#accordion">
+                                        <div class="normal-a">
+                                            <a href="#">Men Bag</a>
+                                            <a href="#">Shoes</a>
+                                            <a href="#">Watch</a>
+                                            <a href="#">T-shirt</a>
+                                            <a href="#">shirt</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="s-side-text">
+                        <div class="sidebar-title clearfix">
+                            <h4 class="floatleft">brands</h4>
+                            <h5 class="floatright"><a href="#">All</a></h5>
+                        </div>
+                        <div class="brands-select clearfix">
+                            <ul>
+                                <li>
+                                    <a href="#">Offset</a>
+                                    <a href="#">Ecko Untid</a>
+                                    <a href="#">Addidas</a>
+                                    <a href="#">Custo</a>
+                                    <a href="#">Guccies</a>
+                                </li>
+                                <li>
+                                    <a href="#">Unlimited</a>
+                                    <a href="#">Shoes</a>
+                                    <a href="#">Watch</a>
+                                    <a href="#">Color Full</a>
+                                    <a href="#">Best choice</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="s-side-text">
+                        <div class="sidebar-title clearfix">
+                            <h4 class="floatleft">recent post</h4>
+                        </div>
+                        <div class="recent-post clearfix">
+                            <ul>
+                                <li>
+                                    <a href="#"><img th:src="@{/client/img/blog/r1.webp}" alt="" /></a>
+                                    <h5><a href="#">women’s fashon</a></h5>
+                                    <span>Jun 25, 2021</span>
+                                </li>
+                                <li>
+                                    <a href="#"><img th:src="@{/client/img/blog/r2.webp}" alt="" /></a>
+                                    <h5><a href="#">child's fashon</a></h5>
+                                    <span>Jun 24, 2021</span>
+                                </li>
+                                <li>
+                                    <a href="#"><img th:src="@{/client/img/blog/r3.webp}" alt="" /></a>
+                                    <h5><a href="#">women’s fashon</a></h5>
+                                    <span>Jun 22, 2021</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="s-side-text">
+                        <div class="banner clearfix">
+                            <a href="#"><img th:src="@{/client/img/products/banner.webp}" alt="" /></a>
+                            <div class="banner-text">
+                                <h2>best</h2> <br />
+                                <h2 class="banner-brand">brand</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-9 order-1 order-lg-2">
+                <ul class="blog-row clearfix">
+                    <li>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/1.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">Fashion style fine arts drawing</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 25, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/2.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">women’s Fashion style 2021</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 15, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/4.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">Fashion style fine arts drawing</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 25, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/5.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">women’s Fashion style 2021</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 15, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/7.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">Fashion style fine arts drawing</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 25, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="l-blog-text">
+                                    <div class="banner"><a th:href="@{/blog}"><img th:src="@{/client/img/blog/8.webp}" alt="" /></a></div>
+                                    <div class="s-blog-text">
+                                        <h4><a th:href="@{/blog}">women’s Fashion style 2021</a></h4>
+                                        <span>By : <a href="#">Rakib</a> | <a href="#">210 Like</a> | <a href="#">69 Comments</a></span>
+                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour....</p>
+                                    </div>
+                                    <div class="date-read clearfix">
+                                        <a href="#"><i class="mdi mdi-clock"></i> jun 15, 2021</a>
+                                        <a th:href="@{/blog}">read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="pagnation-ul">
+                    <ul class="clearfix">
+                        <li><a href="#"><i class="mdi mdi-menu-left"></i></a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">10</a></li>
+                        <li><a href="#"><i class="mdi mdi-menu-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- blog section end -->
+<!-- footer section start -->
+<div th:replace="~{client/layout/footer::footer}"></div>
+<!-- footer section end -->
+
+<!-- all js here -->
+<!-- jquery latest version -->
+<div th:replace="~{client/layout/script::script}"></div>
+</body>
+
+</html>

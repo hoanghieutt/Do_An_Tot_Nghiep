@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin giao dịch</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/client/css/payment/payment.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img th:src="@{/image/success_icon.png}" alt="Success Icon">
+        <h2>Giao dịch thành công</h2>
+    </div>
+    <div>
+        <h2>Thông tin giao dịch</h2>
+    </div>
+    <table>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <td id="orderInfo"></td>
+        </tr>
+        <tr>
+            <th>Số tiền</th>
+            <td id="amount"></td>
+        </tr>
+        <tr>
+            <th>Mã ngân hàng</th>
+            <td id="bankCode"></td>
+        </tr>
+        <tr>
+            <th>Loại thẻ</th>
+            <td id="cardType"></td>
+        </tr>
+        <tr>
+            <th>Ngày thanh toán</th>
+            <td id="payDate"></td>
+        </tr>
+    </table>
+
+    <div class="buttons">
+        <a th:href="@{/}" class="button home-button">Trang chủ</a>
+        <a th:href="@{/myOrder}" class="button order-button">My Order</a>
+    </div>
+</div>
+
+<script th:src="@{/client/js/payment/payment.js}"></script>
+</body>
+</html>

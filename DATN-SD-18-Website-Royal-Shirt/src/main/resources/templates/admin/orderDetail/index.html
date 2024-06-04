@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<!-- Thêm thư viện SockJS và Stomp -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.0/angular-translate.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/angular-translate-loader-static-files@2.19.0/angular-translate-loader-static-files.min.js"></script>
+<script src="js/translate.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+<!-- Bạn cần bao gồm CSS của SweetAlert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Bạn cần bao gồm JavaScript của SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="stylesheet" th:href="@{/admin/css/orderDetail/orderDetail.css}">
+
+<head th:replace="admin/layout/head::head"></head>
+
+<style>
+    .step {
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+
+    .timestamp {
+        font-size: 0.9em;
+    }
+
+    .hide {
+        background-color: #939495;
+        color: rgb(204, 203, 203);
+
+    }
+
+    .showw {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+
+<body onload="time()" class="app sidebar-mini rtl" ng-app="myApp" ng-controller="myCtrl">
+<!-- Navbar-->
+<div th:replace="admin/layout/header::header"></div>
+<!-- Sidebar menu-->
+<div th:replace="admin/layout/sidebar::sidebar"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a th:href="@{/admin/oder}"><b>Danh sách đơn hàng / Chi tiết đơn hàng</b></a>
+            </li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+    <div class="pl-4 title">Trạng thái đơn hàng</div> &nbsp;
+    <div class="border shadow rounded">
+        <div class="container">
+            <div class="row justify-content-center mt-3 mb-3">
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" th:classappend="${order.status == 1} ? 'showw' : 'hide'">
+                        <div class="title">Chờ xác nhận</div>
+                        <div class="timestamp" th:if="${order.confirmWaitDate} != null"
+                             th:text="${#temporals.format(order.confirmWaitDate, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                        <div class="timestamp" th:if="${order.confirmWaitDate} == null">Processing</div>
+                    </div>
+                </div>
+
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" ng-click="changeStatus(2)"
+                         th:classappend="${order.status == 2} ? 'showw' : 'hide'">
+                        <div class="title">Xác nhận</div>
+                        <div class="timestamp" th:if="${order.confirmDate} != null"
+                             th:text="${#temporals.format(order.confirmDate, 'dd/MM/yyyy HH:mm:ss')}">
+                        </div>
+                        <div class="timestamp" th:if="${order.confirmDate} == null">Processing
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" ng-click="changeStatus(3)"
+                         th:classappend="${order.status == 3} ? 'showw' : 'hide'">
+                        <div class="title">Chờ giao hàng</div>
+                        <div class="timestamp" th:if="${order.shipWaitDate} != null"
+                             th:text="${#temporals.format(order.shipWaitDate, 'dd/MM/yyyy HH:mm:ss')}">
+                        </div>
+                        <div class="timestamp" th:if="${order.shipWaitDate} == null">Processing
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" ng-click="changeStatus(4)"
+                         th:classappend="${order.status == 4} ? 'showw' : 'hide'">
+                        <div class="title">Giao hàng</div>
+                        <div class="timestamp" th:if="${order.shipDate} != null"
+                             th:text="${#temporals.format(order.shipDate, 'dd/MM/yyyy HH:mm:ss')}">
+                        </div>
+                        <div class="timestamp" th:if="${order.shipDate} == null">Processing
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" ng-click="changeStatus(5)"
+                         th:classappend="${order.status == 5} ? 'showw' : 'hide'">
+                        <div class="title">Hoàn thành</div>
+                        <div class="timestamp" th:if="${order.successDate} != null"
+                             th:text="${#temporals.format(order.successDate, 'dd/MM/yyyy HH:mm:ss')}">
+                        </div>
+                        <div class="timestamp" th:if="${order.successDate} == null">Processing
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2" style="cursor: pointer;">
+                    <div class="step" ng-click="changeStatus(6)"
+                         th:classappend="${order.status == 6} ? 'showw' : 'hide'">
+                        <div class="title">Hủy hàng</div>
+                        <div class="timestamp" th:if="${order.cancelDate} != null"
+                             th:text="${#temporals.format(order.cancelDate, 'dd/MM/yyyy HH:mm:ss')}">
+                        </div>
+                        <div class="timestamp" th:if="${order.cancelDate} == null">Processing</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="margin-left: 2rem;margin-right: 2rem;">
+        <div class="container border rounded mt-5 ">
+            <div class="row">
+                <div class="col">
+                    <div class="title mt-2">Thông tin đơn hàng</div>
+                </div>
+                <div class="col-auto mt-1">
+                    <button ng-if="order.status==1 && order.shopping != 'VN PAY'" type="button" class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalId">Thêm sản phẩm
+                    </button>
+                    <a ng-href="/admin/oder/order-detail/{{order.id}}">
+                        <button ng-if="order.status==1 && order.shopping != 'VN PAY'"
+                                class="btn btn-primary"> Làm mới
+                        </button>
+                    </a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalId" tabindex="-1" role="dialog" aria-labelledby="modalTitleId"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <style>
+                                            body {
+                                                font-family: Arial, sans-serif;
+                                                margin: 0;
+                                                padding: 0;
+                                            }
+
+                                            .product {
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: space-between;
+                                                /* Để căn cả ảnh và chi tiết sản phẩm */
+                                                width: 100%;
+                                                max-width: 800px;
+                                                margin: 0 auto;
+                                                padding: 5px;
+                                                padding-bottom: 5px;
+                                                border-radius: 8px;
+                                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                            }
+
+                                            .product img {
+                                                width: 80px;
+                                                height: 80px;
+                                                margin-right: 20px;
+                                                border-radius: 8px;
+                                            }
+
+                                            .product .details {
+                                                flex: 1;
+                                            }
+
+                                            .product h4 {
+                                                margin-top: 0;
+                                                margin-bottom: 10px;
+                                            }
+
+                                            .product p {
+                                                margin: 0;
+                                            }
+
+                                            .product .action-button {
+                                                background-color: #007bff;
+                                                /* Màu nút */
+                                                color: #fff;
+                                                /* Màu chữ */
+                                                border: none;
+                                                border-radius: 4px;
+                                                padding: 8px 16px;
+                                                cursor: pointer;
+                                            }
+                                        </style>
+                                        <center class="mt-2"><b>
+                                            <h3>Danh sách sản phẩm</h3>
+                                        </b></center>
+
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <input type="text" ng-model="key"
+                                                           style="width: 100%; height: 100%; border: 1px solid gray;border-radius: 5px;">
+                                                </div>
+                                                <div class="col-3">
+                                                    <button type="button" ng-click="search()"
+                                                            class="btn btn-primary ng-scope" style="height: 100%;">Tìm
+                                                        kiếm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <br>
+                                        <div class="product" ng-repeat="obj in listProduct">
+                                            <td>
+                                                <img ng-src="{{obj.product.image[0].urlImage
+                                                    }}" width="80px" height="80px" alt="">
+                                            </td>
+                                            <div class="details">
+                                                <h5>{{obj.product.name}}</h5>
+                                                <div
+                                                        ng-show="obj.product.discount !== null && obj.product.discount.status==0">
+                                                    <p style="text-decoration: line-through;">Giá:
+                                                        {{obj.price.toLocaleString('vi-VN')}} VNĐ</p>
+
+                                                    <p style="color: orange;">Giá bán:
+                                                        <span
+                                                                ng-show="obj.product.discount !== null && obj.product.discount.status == 0">
+                                                                {{(obj.price - (obj.price *
+                                                                obj.product.discount.discount /
+                                                                100)).toLocaleString('vi-VN')}} VNĐ
+                                                            </span>
+                                                        <span
+                                                                ng-show="obj.product.discount === null || obj.product.discount.status == 1">
+                                                                {{obj.price.toLocaleString('vi-VN')}} VNĐ
+                                                            </span>
+                                                    </p>
+
+                                                </div>
+                                                <div
+                                                        ng-show="obj.product.discount === null || obj.product.discount.status == 1">
+                                                    <p>Giá: {{obj.price.toLocaleString('vi-VN')}} VNĐ</p>
+                                                </div>
+                                                <p>Màu sắc: {{obj.color.name}}</p>
+                                                <p>Kích thước: {{obj.size.name}}</p>
+                                                <p>Số lượng: {{obj.quantity}}</p>
+                                            </div>
+                                            <button ng-click="addOrderDetails(obj)" class="btn btn-success"><i
+                                                    class="fa-solid fa-cart-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        var modalId = document.getElementById('modalId');
+                        modalId.addEventListener('show.bs.modal', function (event) {
+                            // Button that triggered the modal
+                            let button = event.relatedTarget;
+                            // Extract info from data-bs-* attributes
+                            let recipient = button.getAttribute('data-bs-whatever');
+                            // Use above variables to manipulate the DOM
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="container border rounded ">
+            <div class="row justify-content-center">
+                <div class="col-4  mb-1 mt-1">Mã đơn hàng: {{order.id}}</div>
+                <div class="col-4  mb-1 mt-1">Số điện thoại:
+                    <span ng-if="order.type">{{order.phone}}</span>
+                    <span ng-if="!order.type">{{order.customer.phone}}</span>
+                </div>
+                <div class="col-4  mb-1 mt-1">Tên khách hàng: {{order.customer.name}}</div>
+                <div class="col-4  mb-1 mt-1">Loại đơn hàng:
+                    <span ng-if="order.type">Online</span>
+                    <span ng-if="!order.type">Tại quầy</span>
+                </div>
+                <div class="col-4  mb-1 mt-1">Địa chỉ giao hàng: {{order.address}}</div>
+                <div class="col-4  mb-1 mt-1">Ghi chú: {{order.note}}</div>
+                <div class="col-4  mb-1 mt-1">Phương thức thanh toán: {{order.shopping}}</div>
+                <div class="col-4  mb-1 mt-1">Ngày tạo đơn: {{ order.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</div>
+                <div class="col-4  mb-1 mt-1">Ngày cập nhật: {{ order.updatedAt | date:'dd/MM/yyyy HH:mm:ss' }}</div>
+                <div class="col-4  mb-1 mt-1"><span ng-show="order.staff">Nhân viên xác nhận đơn:
+                            {{order.staff.name}}</span></div>
+            </div>
+        </div>
+
+        <div class="container border rounded mt-5">
+            <table ng-hide="orders.length==0" class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th class="stt">STT</th>
+                    <th class="anh">Ảnh</th>
+                    <th class="ten-san-pham">Tên sản phẩm</th>
+                    <th class="so-luong">Số lượng</th>
+                    <th class="gia-ban">Giá bán</th>
+                    <th class="kich_thuoc">Kích thước</th>
+                    <th class="mau-sac">Màu sắc</th>
+                    <th class="tong-tien">Tổng tiền</th>
+                    <th class="thao-tac" ng-if="order.status==1 && order.shopping != 'VN PAY'">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Sử dụng Thymeleaf để lặp qua danh sách đơn hàng và hiển thị thông tin -->
+                <tbody>
+                <tr ng-repeat="o in order.orderDetails">
+                    <td class="stt">{{$index + 1}}</td>
+                    <td class="anh">
+                        <img ng-src="{{o.productDetail.product.image[0].urlImage
+                                }}" width="80px" height="120px" alt="">
+                    </td>
+                    </td>
+                    <td class="ten-san-pham">{{o.productDetail.product.name}}</td>
+                    <td class="so-luong">
+                        <div class="quantity-controls">
+                            <button ng-if="order.status==1 && order.shopping != 'VN PAY'" class="btn btn-sm btn-primary"
+                                    ng-click="decrementQuantity(o.id)">-
+                            </button>
+                            <span>{{o.quantity}}</span>
+                            <button ng-if="order.status==1 && order.shopping != 'VN PAY'" class="btn btn-sm btn-primary"
+                                    ng-click="incrementQuantity(o.id)">+
+                            </button>
+                        </div>
+                    </td>
+                    <td class="gia-ban">{{ o.price.toLocaleString('vi-VN') }} VNĐ</td>
+                    <td class="kich-thuoc">{{o.productDetail.size.name}}</td>
+                    <td class="mau-sac">{{o.productDetail.color.name}}</td>
+
+                    <td class="tong-tien">
+                        {{ (o.price * o.quantity).toLocaleString('vi-VN') }} VNĐ
+                    </td>
+
+                    <td class="thao-tac" ng-show="order.status==1 && order.shopping != 'VN PAY'">
+                        <a ng-click="deleteOrderDetail(o.id)">
+                            <button class="btn btn-warning"><span style="color: white;">Xóa</span></button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <div class="row p-2">
+                <!-- Thêm cột giá đơn hàng -->
+                <div class="col text-right">
+                    <div class="title">Giá đơn hàng: {{order.totalPrice.toLocaleString('vi-VN')}} VNĐ</div>
+                    <div class="title">Phí ship: {{order.shipCost.toLocaleString('vi-VN')}} VNĐ</div>
+                    <div class="title">Tổng cộng: <span style="color: red;">{{total.toLocaleString('vi-VN')}}
+                                VNĐ</span></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+
+    <!-- Nav tabs -->
+
+
+    <!-- Tab panes -->
+
+
+</main>
+
+<!-- Data table plugin-->
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+<script>
+    var app = angular.module("myApp", []);
+    app.controller('myCtrl', function ($scope, $http, $window, $rootScope) {
+        var Url = "http://localhost:8080";
+        var orderUrl = "http://localhost:8080/admin/rest/order";
+        $scope.order = {};
+        $scope.total = 0;
+        $scope.listProduct = [];
+        $scope.listProductTemp = [];
+        // Hàm để lấy thông tin đơn hàng từ máy chủ
+        $scope.getOrder = function () {
+            // Lấy URL từ địa chỉ hiện tại
+            let url = window.location.href;
+
+            // Tìm index của dấu '/' cuối cùng
+            let lastIndex = url.lastIndexOf('/');
+
+            // Lấy phần chuỗi sau dấu '/' cuối cùng
+            let numbersString = url.substring(lastIndex + 1);
+
+            // Chuyển đổi phần chuỗi thành mảng các số (nếu có)
+            let numbers = numbersString.split('/');
+
+            // Gửi yêu cầu GET đến máy chủ để lấy thông tin đơn hàng
+            $http.get("http://localhost:8080/admin/rest/order-detail/" + numbers)
+                .then(function (response) {
+                    // Dữ liệu trả về
+                    $scope.order = response.data;
+
+                    // Sử dụng Promise.all để chờ tất cả các yêu cầu $http.get hoàn thành
+                    var imageRequests = $scope.order.orderDetails.map(function (orderDetail) {
+                        return $http.get('/admin/rest/order-detail/image/' + orderDetail.productDetail.product.id)
+                            .then(function (response) {
+                                orderDetail.productDetail.product.image = response.data;
+                                console.log(orderDetail.productDetail.product.image);
+                            })
+                            .catch(function (error) {
+                                console.error('Error:', error);
+                            });
+                    });
+                    $scope.calculateTotal();
+                    // Chờ cho tất cả các yêu cầu $http.get hoàn thành
+                    return Promise.all(imageRequests);
+                }).catch(function (error) {
+                console.error("Lỗi: " + error.data);
+            });
+        }
+
+        // Gọi hàm getOrder() khi trang được load
+        $scope.getOrder();
+
+        // Hàm để lấy danh sách sản phẩm từ máy chủ
+        $scope.getProducts = function () {
+            $http.get("http://localhost:8080/admin/rest/order-detail/get-products")
+                .then(function (response) {
+                    // Lưu danh sách sản phẩm vào $scope.listProduct
+                    $scope.listProduct = response.data;
+                    $scope.listProductTemp = response.data;
+                    // Sử dụng Promise.all để chờ tất cả các yêu cầu $http.get hoàn thành
+                    var imageRequests = $scope.listProductTemp.map(function (obj) {
+                        return $http.get('/admin/rest/order-detail/image/' + obj.product.id)
+                            .then(function (response) {
+                                obj.product.image = response.data;
+                                console.log(obj.product.image);
+                            })
+                            .catch(function (error) {
+                                console.error('Error:', error);
+                            });
+                    });
+
+                    // Chờ cho tất cả các yêu cầu $http.get hoàn thành
+                    return Promise.all(imageRequests);
+                }).catch(function (error) {
+                console.error("Lỗi: " + error.data);
+            });
+        }
+
+        // Gọi hàm getProducts() khi trang được load
+        $scope.getProducts();
+
+        // Hàm để tăng số lượng của một sản phẩm trong đơn hàng
+        $scope.incrementQuantity = function (id) {
+            var orderDetails = $scope.order.orderDetails;
+            for (var i = 0; i < orderDetails.length; i++) {
+                if (orderDetails[i].id === id) {
+                    orderDetails[i].quantity++;
+                    // Gửi yêu cầu POST để tăng số lượng chi tiết đơn hàng có id tương ứng
+                    $http.post("http://localhost:8080/admin/rest/order-detail/plus-order-detail/" + id)
+                        .then(function (response) {
+                            orderDetails[i] = response.data;
+
+                            $scope.getOrder();
+                        }).catch(function (error) {
+                        console.error("Lỗi: " + error.data);
+                    });
+                    break; // Kết thúc vòng lặp sau khi tìm thấy phần tử có id phù hợp
+                }
+            }
+        };
+
+        // Hàm để giảm số lượng của một sản phẩm trong đơn hàng
+        $scope.decrementQuantity = function (id) {
+            var orderDetails = $scope.order.orderDetails;
+            for (var i = 0; i < orderDetails.length; i++) {
+                if (orderDetails[i].id === id) {
+                    if (orderDetails[i].quantity > 1) {
+                        // Giảm số lượng sản phẩm nếu số lượng lớn hơn 1
+                        orderDetails[i].quantity--;
+                        // Gửi yêu cầu POST để giảm số lượng chi tiết đơn hàng có id tương ứng
+                        $http.post("http://localhost:8080/admin/rest/order-detail/minus-order-detail/" + id)
+                            .then(function (response) {
+                                orderDetails[i] = response.data;
+                                // Tính toán lại tổng giá trị đơn hàng sau khi giảm số lượng
+
+                                $scope.getOrder();
+                            }).catch(function (error) {
+                            console.error("Lỗi: " + error.data);
+                        });
+                    }
+                    break; // Kết thúc vòng lặp sau khi tìm thấy phần tử có id phù hợp
+                }
+            }
+        };
+
+        // Hàm tính tổng giá trị của mỗi đơn hàng
+        $scope.calculateTotal = function () {
+            var total = 0;
+            $scope.order.orderDetails.forEach(function (orderDetail) {
+                var price = orderDetail.price;
+                var quantity = orderDetail.quantity;
+                total += price * quantity;
+            });
+            $scope.total = total + $scope.order.shipCost;
+            // Gọi hàm cập nhật đơn hàng sau khi tính toán tổng giá trị
+            $scope.updateOrder();
+        };
+
+        // Hàm thêm chi tiết đơn hàng mới
+        $scope.addOrderDetails = function (o) {
+            var obj = {
+                id: null,
+                quantity: 1,
+                status: 1,
+                order: $scope.order,
+                productDetail: o
+            };
+            // Gửi yêu cầu POST để thêm chi tiết đơn hàng mới
+            $http.post("http://localhost:8080/admin/rest/order-detail/add-order-detail/" + o.id + "/" + $scope.order.id, obj)
+                .then(function (response) {
+                    // Lấy lại thông tin đơn hàng sau khi thêm chi tiết mới
+                    $scope.getOrder();
+                }).catch(function (error) {
+                console.error("Lỗi: " + error.data);
+            });
+        };
+
+        // Hàm để cập nhật đơn hàng
+        $scope.updateOrder = function () {
+            $scope.order.totalPrice = $scope.total - $scope.order.shipCost;
+            // Gửi yêu cầu POST để cập nhật thông tin của đơn hàng
+            $http.post('/admin/rest/order-detail/update-order', $scope.order)
+                .then(function (response) {
+                    console.log('Đã cập nhật đơn hàng:', response.data);
+                })
+                .catch(function (error) {
+                    // Xử lý lỗi nếu có
+                    console.error('Lỗi khi cập nhật đơn hàng:', error);
+                });
+        };
+
+        // Hàm để lấy ảnh
+        $scope.getImageUrl = function (id) {
+
+            $http.get('/admin/rest/order-detail/image/' + id)
+                .then(function (response) {
+                    return response.data;
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        };
+
+        $scope.deleteOrderDetail = function (id) {
+            if ($scope.order.orderDetails.length == 1) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lưu ý!',
+                    text: 'Đơn hàng phải có ít nhất 1 sản phẩm!'
+                });
+            } else {
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa khỏi đơn hàng?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $http.post("http://localhost:8080/admin/rest/order-detail/delete-order-detail/" + id)
+                            .then(function (response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công!',
+                                    text: 'Đã xóa sản phẩm khỏi đơn hàng!'
+                                })
+                                $scope.getOrder();
+                            }).catch(function (error) {
+                            console.error("Lỗi: " + error.data);
+                        });
+
+                        // Nếu người dùng xác nhận, thực hiện submit form
+
+
+                    }
+                });
+
+            }
+        };
+        // Hàm để thay đổi trạng thái của đơn hàng
+        $scope.changeStatus = function (status) {
+            // Kiểm tra nếu đơn hàng đã ở trong trạng thái mới được chọn và không phải là trạng thái hủy đơn hàng (6)
+            if ($scope.order.status == status && status != 6) {
+                return; // Không làm gì nếu đơn hàng đã ở trong trạng thái đã chọn
+            }
+            if (status == 2) {
+                for (var i = 0; i < $scope.order.orderDetails.length; i++) {
+                    if ($scope.order.orderDetails[i].productDetail.product.status === 1) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Lưu ý!',
+                            text: 'Sản phẩm '  + $scope.order.orderDetails[i].productDetail.product.name + ' Kích thước: ' + $scope.order.orderDetails[i].productDetail.size.name + ' Màu: ' + $scope.order.orderDetails[i].productDetail.color.name + ' trong đơn hàng đã ngưng kinh doanh!'
+                        });
+                        return;
+                    }
+                    if ($scope.order.orderDetails[i].productDetail.quantity < $scope.order.orderDetails[i].quantity) {
+                        // Hiển thị cảnh báo nếu đơn hàng không ở trạng thái chờ xác nhận mà người dùng muốn hủy đơn hàng
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Lưu ý!',
+                            text: 'Có sản phẩm ' + $scope.order.orderDetails[i].productDetail.product.name + ' Kích thước: ' + $scope.order.orderDetails[i].productDetail.size.name + ' Màu: ' + $scope.order.orderDetails[i].productDetail.color.name + ' không đủ số lượng!'
+                        });
+                        return;
+                    }
+                }
+
+            }
+            // Kiểm tra các điều kiện khi thay đổi trạng thái
+            if ($scope.order.status != 1 && status == 6) {
+                // Hiển thị cảnh báo nếu đơn hàng không ở trạng thái chờ xác nhận mà người dùng muốn hủy đơn hàng
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lưu ý!',
+                    text: 'Chỉ đơn hàng trạng thái chờ xác nhận có thể hủy!'
+                });
+            } else if ($scope.order.status > status || $scope.order.status < status - 1 && status != 6) {
+                // Hiển thị cảnh báo nếu không thể thay đổi trạng thái đơn hàng
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lưu ý!',
+                    text: 'Không thể đổi trạng thái đơn hàng!'
+                });
+            } else {
+                // Hiển thị cảnh báo xác nhận thay đổi trạng thái đơn hàng
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn thay đổi trạng thái đơn hàng?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Nếu người dùng xác nhận, thực hiện submit form
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: 'Đã chuyển đổi trạng thái đơn hàng!'
+                        }).then(() => {
+                            setTimeout(function () {
+                                // Nếu người dùng xác nhận, gửi yêu cầu POST để thay đổi trạng thái đơn hàng
+                                $http.post("http://localhost:8080/admin/rest/order-detail/change-order-status/" + $scope.order.id + "/" + status)
+                                    .then(function (response) {
+                                        // Nạp lại trang sau khi thực hiện thay đổi
+                                        $window.location.reload();
+                                    }).catch(function (error) {
+                                    console.error("Lỗi: " + error.data);
+                                });
+                            }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                        });
+
+                    }
+                });
+            }
+        };
+        $scope.search = function () {
+            if ($scope.key) {
+                // Chuyển đổi keyword sang chữ thường để tìm kiếm không phân biệt hoa thường
+                var searchTerm = $scope.key.toLowerCase();
+
+                // Lọc danh sách sản phẩm dựa trên tên sản phẩm chứa keyword
+                $scope.listProduct = $scope.listProductTemp.filter(function (product) {
+                    // Kiểm tra xem product.name có tồn tại không trước khi gọi toLowerCase()
+                    return product.product.name && product.product.name.toLowerCase().includes(searchTerm);
+                });
+            } else {
+                // Nếu không có keyword, hiển thị lại toàn bộ danh sách sản phẩm
+                $scope.listProduct = $scope.listProductTemp;
+            }
+        };
+    });
+
+</script>
+</body>
+
+</html>

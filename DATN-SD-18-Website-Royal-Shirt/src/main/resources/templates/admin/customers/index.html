@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+<!-- Bạn cần bao gồm CSS của SweetAlert -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Bạn cần bao gồm JavaScript của SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="stylesheet" th:href="@{/admin/css/category/category.css}">
+
+<head th:replace="admin/layout/head::head"></head>
+
+<body onload="time()" class="app sidebar-mini rtl">
+
+<!-- Navbar-->
+<div th:replace="admin/layout/header::header"></div>
+<!-- Sidebar menu-->
+<div th:replace="admin/layout/sidebar::sidebar"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Danh sách khách hàng</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+
+                    <div class="row element-button">
+                        <div class="col-sm-2">
+
+                            <a class="btn btn-add btn-sm" data-bs-toggle="modal" data-bs-target="#modalId"
+                               title="Thêm"><i class="fas fa-plus"></i>
+                                Tạo mới khách hàng</a>
+                        </div>
+                        <div class="col-sm-5 d-flex align-items-center">
+                            <input style="cursor: pointer;" type="radio" name="status" value="all" checked> Tất cả
+                            &nbsp;
+                            <input style="cursor: pointer;" type="radio" name="status" value="active"> Hoạt động
+                            &nbsp;
+                            <input style="cursor: pointer;" type="radio" name="status" value="inactive"> Không hoạt
+                            động &nbsp;
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="modalId" tabindex="-1" role="dialog"
+                             aria-labelledby="modalTitleId" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <center><b>Thêm khách hàng</b></center>
+                                        <form id="addCustomerForm" action="#" th:action="@{/admin/customers/add}"
+                                              th:object="${customer}" method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="name">Họ và tên:</label>
+                                                <input type="text" class="form-control" id="name" th:field="*{name}"
+                                                       required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phone">Số điện thoại:</label>
+                                                <input type="text" class="form-control" id="phone"
+                                                       th:field="*{phone}" required pattern="[0-9]{10}"
+                                                       title="Số điện thoại phải có 10 chữ số">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="avatar">Ảnh đại diện:</label>
+                                                <input type="file" class="form-control-file" id="avatarFile"
+                                                       name="avatarFile" accept="image/*" required>
+                                            </div>
+                                            <input type="text" class="form-control-file" id="avatar" hidden="true"
+                                                   name="avatar" accept="image/*">
+                                            <div hidden class="form-group">
+                                                <label for="password">Mật khẩu:</label>
+                                                <input type="password" class="form-control" id="password"
+                                                       th:field="*{password}" required pattern=".{6,}"
+                                                       title="Mật khẩu phải có ít nhất 6 ký tự">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="status">Trạng thái:</label>
+                                                <select class="form-control" id="status" th:field="*{status}"
+                                                        required>
+                                                    <option value="0">Hoạt động</option>
+                                                    <option value="1">Ngưng hoạt động</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email">Email:</label>
+                                                <input type="email" class="form-control" id="email"
+                                                       th:field="*{email}" required>
+                                            </div>
+                                            <button type="button" class="btn btn-primary"
+                                                    id="confirmCreate">Create</button>
+                                        </form>
+
+                                        <script>
+                                            $(document).ready(function () {
+                                                $('#confirmCreate').on('click', function () {
+                                                    // Kiểm tra tất cả các trường trong biểu mẫu
+                                                    if (!validateForm()) {
+                                                        return; // Không làm gì nếu có lỗi trong biểu mẫu
+                                                    }
+                                                    Swal.fire({
+                                                        title: 'Bạn có chắc chắn muốn thêm khách hàng này?',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonText: 'Yes',
+                                                        cancelButtonText: 'No'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            Swal.fire({
+                                                                icon: 'success',
+                                                                title: 'Thành công!',
+                                                                text: 'Thông tin khách hàng đã được thêm thành công!'
+                                                            }).then(() => {
+                                                                setTimeout(function () {
+                                                                    $('#addCustomerForm').submit(); // Submit form khi người dùng nhấp vào OK
+                                                                }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                                                            });
+                                                        }
+
+                                                    });
+                                                });
+
+                                                // Hàm kiểm tra biểu mẫu
+                                                function validateForm() {
+                                                    var isValid = true;
+
+                                                    // Kiểm tra trường Họ và tên
+                                                    var name = $('#name').val().trim();
+                                                    if (name === '') {
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Lỗi!',
+                                                            text: 'Vui lòng nhập Họ và tên!'
+                                                        });
+                                                        isValid = false;
+                                                        return isValid;
+                                                    }
+
+                                                    // Kiểm tra trường Số điện thoại
+                                                    var phone = $('#phone').val().trim();
+                                                    if (phone === '') {
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Lỗi!',
+                                                            text: 'Vui lòng nhập Số điện thoại!'
+                                                        });
+                                                        isValid = false;
+                                                        return isValid;
+                                                    } else if (!(/^\d{10}$/).test(phone)) { // Kiểm tra định dạng số điện thoại
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Lỗi!',
+                                                            text: 'Số điện thoại phải có 10 chữ số!'
+                                                        });
+                                                        isValid = false;
+                                                        return isValid;
+                                                    }
+
+                                                    // Kiểm tra trường Email
+                                                    var email = $('#email').val().trim();
+                                                    if (email === '') {
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Lỗi!',
+                                                            text: 'Vui lòng nhập Email!'
+                                                        });
+                                                        isValid = false;
+                                                    } else if (!isValidEmail(email)) { // Kiểm tra định dạng Email
+
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Lỗi!',
+                                                            text: 'Vui lòng nhập đúng định dạng Email!'
+                                                        });
+                                                        isValid = false;
+                                                        return isValid
+                                                    }
+
+                                                    return isValid;
+                                                }
+                                                // Hàm kiểm tra định dạng Email
+                                                function isValidEmail(email) {
+                                                    // Sử dụng regex để kiểm tra định dạng Email
+                                                    var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                    return regex.test(email);
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            var modalId = document.getElementById('modalId');
+
+                            modalId.addEventListener('show.bs.modal', function (event) {
+                                // Button that triggered the modal
+                                let button = event.relatedTarget;
+                                // Extract info from data-bs-* attributes
+                                let recipient = button.getAttribute('data-bs-whatever');
+
+                                // Use above variables to manipulate the DOM
+                            });
+                        </script>
+
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="customerModal" tabindex="-1" role="dialog"
+                         aria-labelledby="customerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <center><b>Cập nhật thông tin</b></center>
+                                    <form id="updateCustomerForm" action="#" th:action="@{/admin/customers/update}"
+                                          th:object="${newCustomer}" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label for="name">Mã khách hàng:</label>
+                                            <input readonly type="text" class="form-control" id="customerId"
+                                                   th:field="*{id}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">Họ và tên:</label>
+                                            <input type="text" class="form-control" id="customerName"
+                                                   th:field="*{name}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone">Số điện thoại:</label>
+                                            <input type="text" class="form-control" id="customerPhone"
+                                                   th:field="*{phone}" required pattern="[0-9]{10}"
+                                                   title="Số điện thoại phải có 10 chữ số">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="avatar">Ảnh đại diện:</label>
+                                            <input type="file" class="form-control-file" name="newAvatarFile"
+                                                   accept="image/*" onchange="previewAvatar(event)">
+                                        </div>
+                                        <center>
+                                            <img id="avatarImage" style="object-fit: cover;" alt="Avatar"
+                                                 width="250" height="250">
+                                            <div><span id="customerAvatar"></span></div>
+                                        </center>
+
+                                        <script>
+                                            function previewAvatar(event) {
+                                                var input = event.target;
+                                                var reader = new FileReader();
+
+                                                reader.onload = function () {
+                                                    var dataURL = reader.result;
+                                                    var avatarImage = document.getElementById('avatarImage');
+                                                    avatarImage.src = dataURL;
+                                                };
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        </script>
+                                        <input type="text" class="form-control-file" id="customerAvatar"
+                                               hidden="true" name="avatar" accept="image/*">
+                                        <div hidden class="form-group">
+                                            <label for="password">Mật khẩu:</label>
+                                            <input type="password" class="form-control" value=""
+                                                   id="customerPassword" th:field="*{password}" required
+                                                   pattern=".{6,}" title="Mật khẩu phải có ít nhất 6 ký tự">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="customerCreateDate">Ngày tạo:</label>
+                                            <input type="text" readonly class="form-control" id="customerCreateDate"
+                                                   th:value="${#dates.format(newCustomer.createDate, 'yyyy-MM-dd HH:mm:ss.SSS')}"
+                                                   required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="customerUpdateDate">Ngày cập nhật:</label>
+                                            <input type="text" readonly class="form-control" id="customerUpdateDate"
+                                                   th:value="${#dates.format(newCustomer.updateDate, 'yyyy-MM-dd HH:mm:ss.SSS')}"
+                                                   required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status">Trạng thái:</label>
+                                            <select class="form-control" id="status" th:field="*{status}"
+                                                    th:value="*{status}" required>
+                                                <option value="0">Hoạt động</option>
+                                                <option value="1">Ngưng hoạt động</option>
+                                            </select>
+
+                                            <div>Trạng thái: <span id="customerStatus"></span>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email:</label>
+                                            <input type="email" class="form-control" id="customerEmail"
+                                                   th:field="*{email}" required>
+                                        </div>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="validateAndUpdate()">Update</button>
+                                    </form>
+                                    <script>
+                                        function validateAndUpdate() {
+                                            // Kiểm tra hợp lệ cho các trường dữ liệu
+                                            if (!validateFormUpdate()) {
+                                                return; // Nếu có lỗi, không làm gì cả
+                                            }
+
+                                            // Hiển thị hộp thoại xác nhận cập nhật
+                                            Swal.fire({
+                                                title: 'Bạn có chắc chắn muốn cập nhật thông tin khách hàng này?',
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonText: 'Yes',
+                                                cancelButtonText: 'No'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    // Nếu người dùng xác nhận, thực hiện submit form
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Thành công!',
+                                                        text: 'Thông tin khách hàng đã được sửa thành công!'
+                                                    }).then(() => {
+                                                        setTimeout(function () {
+                                                            $('#updateCustomerForm').submit(); // Submit form khi người dùng nhấp vào OK
+                                                        }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                                                    });
+
+                                                }
+                                            });
+                                        }
+                                        function validateFormUpdate() {
+                                            var isValid = true;
+
+                                            // Kiểm tra trường Họ và tên
+                                            var name = $('#customerName').val().trim();
+                                            if (name === '') {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Lỗi!',
+                                                    text: 'Vui lòng nhập Họ và tên!'
+                                                });
+                                                isValid = false;
+                                                return isValid;
+                                            }
+
+                                            // Kiểm tra trường Số điện thoại
+                                            var phone = $('#customerPhone').val().trim();
+                                            if (phone === '') {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Lỗi!',
+                                                    text: 'Vui lòng nhập Số điện thoại!'
+                                                });
+                                                isValid = false;
+                                                return isValid;
+                                            } else if (!(/^\d{10}$/).test(phone)) { // Kiểm tra định dạng số điện thoại
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Lỗi!',
+                                                    text: 'Số điện thoại phải có 10 chữ số!'
+                                                });
+                                                isValid = false;
+                                                return isValid;
+                                            }
+                                            // Kiểm tra các trường dữ liệu khác nếu cần
+
+                                            return isValid;
+                                        }
+
+                                    </script>
+                                    <!-- Add other fields here -->
+                                </div>
+                                <div class="modal-footer">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="customerModalAdrr" tabindex="-1" role="dialog"
+                         aria-labelledby="customerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Danh sách địa chỉ -->
+                                    Danh sách địa chỉ
+                                    <ul id="addressList" class="list-group mt-3">
+                                        <!-- Danh sách địa chỉ sẽ được thêm tự động bởi JavaScript -->
+                                    </ul>
+                                    <hr>
+                                    <center><b>Thêm địa chỉ</b></center>
+                                    <form id="addAddressForm" action="#" th:action="@{/admin/customers/addAddress}"
+                                          th:object="${newCustomerAdrr}" method="post">
+                                        <div class="form-group">
+                                            <label for="name">Mã khách hàng:</label>
+                                            <input readonly type="text" id="customerAdrrId" class="form-control"
+                                                   th:field="*{customer.id}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city">Tỉnh/Thành phố:</label>
+                                            <input type="text" class="form-control" th:field="*{city}" id="city"
+                                                   required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city">Huyện/Quận:</label>
+                                            <input type="text" class="form-control" th:field="*{district}"
+                                                   id="district" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city">Xã/Phường:</label>
+                                            <input type="text" class="form-control" th:field="*{ward}" id="ward"
+                                                   required>
+                                        </div>
+                                        <input hidden type="text" class="form-control" th:field="*{fullAddress}"
+                                               id="fullAddress" value="">
+                                        <input hidden type="text" class="form-control" th:field="*{status}"
+                                               value="1">
+                                        <button type="button" id="confirmAddAddress" class="btn btn-primary">Thêm
+                                            địa chỉ</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#confirmAddAddress').on('click', function () {
+                                var city = $('#city').val();
+                                var district = $('#district').val();
+                                var ward = $('#ward').val();
+
+                                // Kiểm tra xem các trường đã được điền đầy đủ chưa
+                                if (city.trim() === '' || district.trim() === '' || ward.trim() === '') {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi!',
+                                        text: 'Vui lòng điền đầy đủ thông tin địa chỉ!'
+                                    });
+                                    return; // Không làm gì nếu các trường bắt buộc chưa được điền đầy đủ
+                                }
+                                var fullAddress = city + ', ' + district + ', ' + ward;
+                                var confirmation = confirm("Bạn có chắc chắn muốn thêm địa chỉ này?");
+                                if (confirmation) {
+                                    $('#fullAddress').val(fullAddress);
+                                    $('#addAddressForm').submit(); // Submit form nếu xác nhận
+                                }
+                            });
+                        });
+                    </script>
+                    <table id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th width="80">Ảnh đại diện</th>
+                            <th>Họ tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th width="130">Trạng thái</th>
+                            <th width="120">Tính năng</th>
+                        </tr>
+                        </thead>
+                        <tbody id="allCustomers">
+                        <!-- Duyệt danh sách khách hàng và hiển thị từng dòng -->
+                        <tr th:each="cus, stat : ${listCus}">
+                            <th width="10" th:text="${stat.index + 1}"></th>
+                            <td>
+                                <img style="object-fit: cover;" th:src="@{'/img/' + ${cus.avatar}}" alt="Avatar"
+                                     width="70" height="70">
+                            </td>
+                            <td th:text="${cus.name}"></td>
+                            <td th:text="${cus.phone}"></td>
+                            <td th:text="${cus.email}"></td>
+<!--                            <td th:text="${cus.status == 0 ? 'Kích hoạt' : 'Không kích hoạt'}"></td>-->
+                            <td>
+                                <span th:if="${cus.status == 0}" class="badge bg-success">Kích hoạt</span>
+                                <span th:if="${cus.status == 1}" class="badge bg-danger">Không kích hoạt</span>
+                            </td>
+                            <td class="table-td-center">
+                                <button class="btn btn-primary btn-sm trash deleteCustomer"
+                                        th:attr="data-id=${cus.id}" title=" Xóa">
+                                    <i class="fas fa-unlock"></i>
+                                </button>
+                                <a class="btn btn-primary btn-sm edit viewCustomerBtn" data-toggle="modal"
+                                   data-target="#cus"
+                                   th:attr="data-id=${cus.id},data-name=${cus.name},data-phone=${cus.phone},data-avatar=${cus.avatar},
+                                            data-status=${cus.status},data-createdate=${cus.createDate},data-updatedate=${cus.updateDate},data-password=${cus.password},data-email=${cus.email}"
+                                   title="Sửa" id="show-emp"><i class="fas fa-edit"></i></a>
+                                <a class="btn btn-primary btn-sm addAddr"
+                                   th:href="@{/admin/customers/address/{customerId}(customerId=${cus.id})}">
+                                    <i class="fa-solid fa-location-dot" style="color: #141415;"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody id="activeCustomers">
+                        <!-- Duyệt danh sách khách hàng và hiển thị từng dòng -->
+                        <tr th:each="cus, stat : ${listCusStatus1}" th:if="${cus.status == 0}">
+                            <!-- <td width="10"><input type="checkbox" name="check1" th:value="${stat.index + 1}"
+                            th:id="'check' + ${stat.index + 1}"></td> -->
+
+                            <td width="10" th:text="${stat.index + 1}"></td>
+                            <td>
+                                <img style="object-fit: cover;" th:src="@{'/img/' + ${cus.avatar}}" alt="Avatar"
+                                     width="70" height="70">
+                            </td>
+                            <td th:text="${cus.name}"></td>
+                            <td th:text="${cus.phone}"></td>
+                            <td th:text="${cus.email}"></td>
+<!--                            <td th:text="${cus.status == 0 ? 'Kích hoạt' : 'Không kích hoạt'}"></td>-->
+                            <td>
+                                <span th:if="${cus.status == 0}" class="badge bg-success">Kích hoạt</span>
+                                <span th:if="${cus.status == 1}" class="badge bg-danger">Không kích hoạt</span>
+                            </td>
+                            <td class="table-td-center">
+                                <button class="btn btn-primary btn-sm trash deleteCustomer"
+                                        th:attr="data-id=${cus.id}" title=" Xóa">
+                                    <i class="fas fa-unlock"></i>
+                                </button>
+                                <a class="btn btn-primary btn-sm edit viewCustomerBtn" data-toggle="modal"
+                                   data-target="#cus"
+                                   th:attr="data-id=${cus.id},data-name=${cus.name},data-phone=${cus.phone},data-avatar=${cus.avatar},
+                                            data-status=${cus.status},data-createdate=${cus.createDate},data-updatedate=${cus.updateDate},data-password=${cus.password},data-email=${cus.email}"
+                                   title="Sửa" id="show-emp"><i class="fas fa-edit"></i></a>
+                                <a class="btn btn-primary btn-sm addAddr"
+                                   th:href="@{/admin/customers/address/{customerId}(customerId=${cus.id})}">
+                                    <i class="fa-solid fa-location-dot" style="color: #141415;"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody id="inactiveCustomers">
+                        <!-- Duyệt danh sách khách hàng và hiển thị từng dòng -->
+                        <tr th:each="cus, stat : ${listCusStatus2}" th:if="${cus.status == 1}">
+                            <td width="10" th:text="${stat.index + 1}"></td>
+                            <td>
+                                <img style="object-fit: cover;" th:src="@{'/img/' + ${cus.avatar}}" alt="Avatar"
+                                     width="70" height="70">
+                            </td>
+                            <td th:text="${cus.name}"></td>
+                            <td th:text="${cus.phone}"></td>
+                            <td th:text="${cus.email}"></td>
+<!--                            <td th:text="${cus.status == 0 ? 'Kích hoạt' : 'Không kích hoạt'}"></td>-->
+                            <td>
+                                <span th:if="${cus.status == 0}" class="badge bg-success">Kích hoạt</span>
+                                <span th:if="${cus.status == 1}" class="badge bg-danger">Không kích hoạt</span>
+                            </td>
+                            <td class="table-td-center">
+                                <button class="btn btn-primary btn-sm trash deleteCustomer"
+                                        th:attr="data-id=${cus.id}" title=" Xóa">
+                                    <i class="fas fa-unlock"></i>
+                                </button>
+                                <a class="btn btn-primary btn-sm edit viewCustomerBtn" data-toggle="modal"
+                                   data-target="#cus"
+                                   th:attr="data-id=${cus.id},data-name=${cus.name},data-phone=${cus.phone},data-avatar=${cus.avatar},
+                                            data-status=${cus.status},data-createdate=${cus.createDate},data-updatedate=${cus.updateDate},data-password=${cus.password},data-email=${cus.email}"
+                                   title="Sửa" id="show-emp"><i class="fas fa-edit"></i></a>
+                                <a class="btn btn-primary btn-sm addAddr"
+                                   th:href="@{/admin/customers/address/{customerId}(customerId=${cus.id})}">
+                                    <i class="fa-solid fa-location-dot" style="color: #141415;"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <script>
+                        document.getElementById('allCustomers').style.display = '';
+                        document.getElementById('activeCustomers').style.display = 'none';
+                        document.getElementById('inactiveCustomers').style.display = 'none';
+                        document.querySelectorAll('input[name="status"]').forEach(function (radio) {
+                            radio.addEventListener('change', function () {
+                                var status = this.value;
+                                if (status === 'all') {
+                                    document.getElementById('allCustomers').style.display = '';
+                                    document.getElementById('activeCustomers').style.display = 'none';
+                                    document.getElementById('inactiveCustomers').style.display = 'none';
+                                } else if (status === 'active') {
+                                    document.getElementById('allCustomers').style.display = 'none';
+                                    document.getElementById('activeCustomers').style.display = '';
+                                    document.getElementById('inactiveCustomers').style.display = 'none';
+                                } else if (status === 'inactive') {
+                                    document.getElementById('allCustomers').style.display = 'none';
+                                    document.getElementById('activeCustomers').style.display = 'none';
+                                    document.getElementById('inactiveCustomers').style.display = '';
+                                }
+                            });
+                        });
+
+
+                    </script>
+                    <!-- Script to show modal and populate customer details -->
+                    <script th:inline="javascript">
+                        $(document).ready(function () {
+                            $('.viewCustomerBtn').click(function () {
+                                var customerId = $(this).data('id');
+                                var customerName = $(this).data('name');
+                                var customerPhone = $(this).data('phone');
+                                var customerStatus = $(this).data('status');
+                                var customerAvatar = $(this).data('avatar');
+                                var customerCreateDate = $(this).data('createdate');
+                                var customerUpdateDate = $(this).data('updatedate');
+                                var customerEmail = $(this).data('email');
+                                var customerPassword = $(this).data('password');
+                                // Kiểm tra nếu customerUpdateDate không được xác định hoặc rỗng
+                                if (!customerUpdateDate || customerUpdateDate === 'undefined') {
+                                    customerUpdateDate = new Date(); // Lấy ngày giờ hiện tại
+                                }
+                                // Get other customer details similarly
+                                $('#customerId').val(customerId);
+                                $('#customerName').val(customerName);
+                                $('#customerPhone').val(customerPhone);
+                                if (customerStatus == 0) {
+                                    $('#customerStatus').text("Hoạt động");
+                                } else {
+                                    $('#customerStatus').text("Ngưng hoạt động");
+                                }
+                                $('#customerAvatar').text(customerAvatar);
+                                $('#customerEmail').val(customerEmail);
+                                $('#customerPassword').val(customerPassword);
+                                $('#customerCreateDate').val(new Date());
+                                $('#customerUpdateDate').val(customerUpdateDate);
+
+                                // Thiết lập trạng thái của khách hàng trong trường select
+                                $('#status option[value="' + customerStatus + '"]').prop('selected', true);
+
+                                // Lấy dữ liệu text từ customerAvatar và gán vào thuộc tính src của ảnh
+                                var avatarImage = document.getElementById('avatarImage');
+                                avatarImage.src = '/img/' + customerAvatar;
+                                // Set other customer details similarly
+
+                                $('#customerModal').modal('show');
+                            });
+                            $('.addAddr').click(function () {
+                                var customerAdrrId = $(this).data('id');
+                                $('#customerAdrrId').val(customerAdrrId);
+
+                                // Lấy danh sách địa chỉ từ dữ liệu thuộc tính của nút
+                                var customerAddresses = $(this).data('addresses');
+                                console.log("customerAddresses", customerAddresses)
+                                // Xóa tất cả các mục trong danh sách địa chỉ
+                                $('#addressList').empty();
+
+                                // Thêm mỗi địa chỉ vào danh sách
+                                customerAddresses.forEach(function (address) {
+                                    var listItem = '<li class="list-group-item">' + address.id + '</li>';
+                                    $('#addressList').append(listItem);
+                                });
+
+                                $('#customerModalAdrr').modal('show');
+                            });
+                            $('.deleteCustomer').click(function () {
+                                var customerId = $(this).data('id');
+                                // Hiển thị hộp thoại xác nhận cập nhật
+                                Swal.fire({
+                                    title: 'Bạn có chắc chắn muốn đổi trạng thái khách hàng này?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Nếu người dùng xác nhận, thực hiện submit form
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Thành công!',
+                                            text: 'Trạng thái khách hàng đã được đổi thành công!'
+                                        }).then(() => {
+                                            setTimeout(function () {
+                                                window.location.href = '/admin/customers/remove/' + customerId;
+                                            }, 1000); // Thời gian trễ 1000 ms (1 giây)
+                                        });
+
+                                    }
+                                });
+                            });
+
+                        });
+
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Essential javascripts for application to work-->
+<script src="/admin/doc/js/jquery-3.2.1.min.js"></script>
+<script src="/admin/doc/js/popper.min.js"></script>
+<script src="/admin/doc/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/admin/doc/js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="/admin/doc/js/plugins/pace.min.js"></script>
+<!-- Page specific javascripts-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<!-- Data table plugin-->
+<script type="text/javascript" src="/admin/doc/js/plugins/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/admin/doc/js/plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+
+</body>
+
+</html>

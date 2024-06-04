@@ -1,0 +1,102 @@
+.add-button {
+    border: none;
+    margin: 0px 0px 0px 5px !important;
+    background-color: rgb(166 236 171);
+}
+
+.add-button:hover {
+    background-color: rgb(120 200 120);
+}
+
+.add-icon {
+    color: #3c3c3c;
+}
+
+.stt, .mau_sac, .kich_thuoc, .trong_luong, .so_luong, .gia_ban, .tinh_nang {
+    position: relative;
+    text-align: center;
+}
+
+#gia_ban::after {
+    content: attr(data-raw-value) " VNĐ";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+#trong_luong::after {
+    content: attr(data-raw-value) " Gram";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+.modal-header {
+    border-bottom: 1px solid #ccc;
+}
+
+#thumbbox {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: auto;
+}
+
+.image-item {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.thumbimage {
+    max-width: 150px;
+    max-height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.image-product-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+.color-quantity {
+    padding-left: 0px;
+}
+
+.row-quantity{
+    height: 51px;
+}
+
+.div-quantity {
+    text-align: left;
+    padding-left: 0px
+}
+
+.label-quantity {
+    padding: 11px 11px 11px 0px;
+    font-size: 16px;
+    font-weight: bold
+}
+
+.label-quantity::after {
+    content: attr(data-raw-value) " Cái";
+    width: 100%; /* Đảm bảo nằm ở cuối cùng */
+}
+
+.product-detail-infor {
+    padding-top: 10px;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.modal-header {
+    border-radius: 0px;
+    border-bottom: 2px solid #FFD43B;
+    margin-bottom: 10px;
+    margin-right: 15px;
+    margin-left: 15px;
+    padding-left: 0px;
+}
+
+.modal-title {
+    font-size: 22px;
+}

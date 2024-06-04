@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+
+<link rel="stylesheet" th:href="@{/admin/css/counter/counter.css}">
+
+<body onload="time()" class="app sidebar-mini rtl">
+<!-- Navbar-->
+<div th:replace="~{admin/layout/header :: header}"></div>
+<!-- Sidebar menu-->
+<div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+<main class="app-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="app-title">
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><a href="#"><b>POS bán hàng</b></a></li>
+                </ul>
+                <div id="clock"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile tile-counter d-flex">
+                <div class="row-counter">
+                    <button onclick="addCounterPage()" class="btn btn-primary btn-add-counter">Thêm hóa đơn <i
+                            class="fa-solid fa-plus fa-xl"></i></button>
+                </div>
+                <div class="col-md-10" style="padding: 0px">
+                    <div id="listCounter" class="row-counter">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="form-counter" style="display: none">
+        <div class="d-flex">
+            <div class="col-md-8">
+                <div class="tile">
+                    <h3 class="tile-title">Phần mềm bán hàng</h3>
+                    <!--Cart-->
+                    <table class="table table-hover table-bordered cart" id="cartTable">
+                        <thead>
+                        <tr>
+                            <th class="stt">STT</th>
+                            <th class="ten_san_pham">Tên Sản Phẩm</th>
+                            <th class="anh">Ảnh</th>
+                            <th class="mau_sac">Màu Sắc</th>
+                            <th class="kich_thuoc">Size</th>
+                            <th class="so_luong">Số Lượng</th>
+                            <th class="gia_ban">Giá Bán</th>
+                            <th class="tinh_nang">Tính Năng</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="listCart">
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <div class="tile">
+                    <h3 class="tile-title">Danh sách sản phẩm</h3>
+
+                    <input type="text" id="myInput" onkeyup="search()"
+                           placeholder="Nhập thông tin sản phẩm để tìm kiếm...">
+                    <div class="du--lieu-san-pham">
+
+                        <!--Danh sách sản phẩm-->
+                        <table class="table table-hover table-bordered js-copytextarea" cellpadding="0"
+                               cellspacing="0"
+                               border="0"
+                               id="sampleTable">
+                            <thead>
+                            <tr>
+                                <th class="stt">STT</th>
+                                <th class="ten_san_pham">Tên Sản Phẩm</th>
+                                <th class="anh">Ảnh</th>
+                                <th class="mau_sac">Màu Sắc</th>
+                                <th class="kich_thuoc">Size</th>
+                                <th class="so_luong">Số Lượng</th>
+                                <th class="gia_ban">Giá Bán</th>
+                                <th class="tinh_nang">Tính Năng</th>
+                            </tr>
+                            </thead>
+
+                            <tbody th:if="${listProductDetail.empty}">
+                            <tr>
+                                <td colspan="8" class="text-center">Danh sách trống!</td>
+                            </tr>
+                            </tbody>
+
+                            <tbody>
+                            <tr th:each="productDetail, index : ${listProductDetail}">
+                                <td class="stt" th:text="${index.index + 1}"></td>
+                                <td class="ten_san_pham" th:text="${productDetail.name}"></td>
+                                <td class="anh"><img th:src="${productDetail.image}" alt="Hình ảnh sản phẩm"></td>
+                                <td class="mau_sac" th:text="${productDetail.colorName}"></td>
+                                <td class="kich_thuoc" th:text="${productDetail.sizeName}"></td>
+                                <td class="so_luong" th:text="${productDetail.quantity}"></td>
+                                <td class="gia_ban" id="gia_ban"
+                                    th:text="${#numbers.formatDecimal((productDetail.discount == 0 ?
+                                    productDetail.price :
+                                    (productDetail.price/100*(100 - productDetail.discount))), 0, 'POINT', 0, 'POINT')}"
+                                ></td>
+                                <td class="table-td-center tinh_nang">
+                                    <button class="btn btn-success add-button" type="button"
+                                            th:attr="data-product-detail-id=${productDetail.id},
+                                                 id=#{${productDetail.id}}"
+                                            onclick="addToCart(this)">
+                                        <i class="fa-solid fa-plus fa-2xl add-icon"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tile">
+                    <h3 class="tile-title">Thông tin thanh toán</h3>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Họ tên khách hàng:</label>
+                            <div class="d-flex">
+                                <select class="form-control" id="select-customer" style="margin-right: 10px">
+
+                                </select>
+                                <button id="showFormCustomer" class="btn btn-primary btn-them" data-toggle="modal"
+                                        data-target="#exampleModalCenter"><i class="fas fa-user-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Nhân viên bán hàng:</label>
+                            <select class="form-control" id="select-staff" disabled>
+                                <option
+                                        th:value="${staff.id}"
+                                        th:text="${staff.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group  col-md-12">
+                            <label class="control-label">Ghi chú đơn hàng:</label>
+                            <textarea id="input-note" class="form-control" rows="4"
+                                      placeholder="Ghi chú thêm đơn hàng"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group  col-md-12">
+                            <label class="control-label">Hình thức thanh toán:</label>
+                            <select class="form-control" id="select-shopping" required>
+                                <option value="Trả tiền mặt tại quầy">Trả tiền mặt tại quầy</option>
+                                <option value="Thanh toán chuyển khoản">Thanh toán chuyển khoản</option>
+                                <option value="Trả bằng tiền mặt & chuyển khoản">Trả bằng tiền mặt & chuyển khoản</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Tổng cộng thanh toán:</label>
+                            <p class="control-all-money-total" id="tong-cong-thanh-toan">0</p>
+                        </div>
+                        <div class="form-group  col-md-12">
+                            <label class="control-label">Khách hàng đưa tiền:</label>
+                            <input class="form-control" id="khach-hang-dua-tien" type="number" value="0" min="0"
+                                   onchange="tinhNo()">
+                        </div>
+                        <div class="form-group  col-md-12">
+                            <label class="control-label">Trả lại khách:</label>
+                            <p class="control-all-money" id="tra-lai-khach">0</p>
+                        </div>
+                        <div class="form-group  col-md-12">
+                            <label class="control-label">Khách hàng còn thiếu:</label>
+                            <p class="control-all-money" id="khach-hang-con-thieu">0</p>
+                        </div>
+                        <div class="tile-footer col-md-12">
+                            <button class="btn btn-primary luu-san-pham" type="button" onclick="saveOrder()"> Lưu đơn
+                                hàng
+                            </button>
+                            <button class="btn btn-primary luu-va-in" type="button" onclick="saveOrder(); $('#bill').printThis();">Lưu và in hóa đơn</button>
+                            <a class="btn btn-secondary luu-va-in" th:href="@{/admin/revenue}">Quay về</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Khách Hàng -->
+<div class="modal fade" id="CustomerModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm Nhanh Khách Hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form fields for customer name and description go here -->
+                <form id="customerForm">
+                    <div class="form-group">
+                        <label for="customerName">Tên Khách Hàng:</label>
+                        <input type="text" class="form-control" id="customerName"
+                               name="customerName"
+                               placeholder="Tên khách hàng...">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Số Điện Thoại:</label>
+                        <input type="text" class="form-control" id="customerPhone"
+                               name="customerPhone"
+                               placeholder="Số điện Thoại...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeFormCustomer">Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--in hóa đơn-->
+<div class="modal fade" id="billPrint" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hóa Đơn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="bill">
+                    <div class="logo d-flex align-items-center justify-content-center m-auto mb-2">
+                        <p class="d-none d-lg-block">
+                        <h3 style="font-weight: 500;">YORAL SHIRT</h3>
+                        </p>
+                    </div>
+                    <center>
+                        <p class="mb-0">Địa chỉ: <span class="ms-2">193/220 Phú Diễn, phường Phú Diễn, quận Nam Từ
+                                    Liêm, Hà Nội</span></p>
+                        <p class="mb-0">Điện thoại: <span class="ms-2">0335535229</span></p>
+                        <br>
+                        <h3 style="font-weight: 500;">HOÁ ĐƠN BÁN HÀNG</h3>
+                        <p class="mb-0">Số hóa đơn: <span class="ms-2" id="hoadoncode">09ku2</span></p>
+                        <p>Loại hóa đơn: <span class="ms-2" id="ordertype">09ku2</span></p>
+                    </center>
+                    <div>
+                        <p class="mb-0">Nhân viên: <span class="ms-2" id="employename" style="font-weight: bold">09ku2</span></p>
+                        <p class="mb-0">Khách hàng: <span class="ms-2" id="customername" style="font-weight: bold">09ku2</span></p>
+                        <p class="mb-0">Số điện thoại: <span class="ms-2" id="phonenumber" style="font-weight: bold">09ku2</span></p>
+
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody id="sanphaminbill"></tbody>
+                    </table>
+                    <div class="row justify-content-end">
+                        <ul class="list-unstyled">
+                            <li class="text-muted ms-3" style="padding-right: 20px">
+                                <span class="text-black me-4 mx-3" style="margin-right: 0px !important;">Tổng tiền sản phẩm:</span>
+                                <span id="total-products" style="font-weight: bold"></span>
+                            </li>
+                        </ul>
+                        <br>
+                        <br>
+                    </div>
+                    <center>
+                        <p class="mb-0"><b><i>Xin cảm ơn và hẹn gặp lại!</i></b></p>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <a >
+                        <button class="btn btn-success" onclick="$('#bill').printThis();">Print</button>
+                    </a>
+
+                    <a th:href="@{/admin/counter}" >
+                        <button class="btn btn-success">OK</button>
+                    </a>
+
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{admin/layout/script :: script}"></div>
+<script th:src="@{/admin/js/counter/counter.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.min.js"
+        integrity="sha512-d5Jr3NflEZmFDdFHZtxeJtBzk0eB+kkRXWFQqEc1EKmolXjHm2IKCA7kTvXBNjIYzjXfD5XzIjaaErpkZHCkBg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.js"
+        integrity="sha512-Fd3EQng6gZYBGzHbKd52pV76dXZZravPY7lxfg01nPx5mdekqS8kX4o1NfTtWiHqQyKhEGaReSf4BrtfKc+D5w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+
+</html>

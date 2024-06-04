@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/layout/head::head"></head>
+
+<body onload="time()" class="app sidebar-mini rtl">
+<!-- Navbar-->
+<div th:replace="admin/layout/header::header"></div>
+<!-- Sidebar menu-->
+<div th:replace="admin/layout/sidebar::sidebar"></div>
+
+
+<main class="app-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="app-title">
+                <ul class="app-breadcrumb breadcrumb">
+                    <li class="breadcrumb-item"><a href="#"><b>Báo cáo doanh thu </b></a></li>
+                </ul>
+                <div id="clock"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small primary coloured-icon"><i class='icon  bx bxs-user fa-3x'></i>
+                <div class="info">
+                    <h4>Tất cả doanh thu</h4>
+                    <p><b><span th:text="${countOrders == null ? '0' : countOrders} + ' đơn hàng'"></span> / <span
+                            th:text="${totalOrders == null ? '0' : #numbers.formatDecimal(totalOrders, 0,'POINT',0, 'POINT')} + ' VNĐ'"></span></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small info coloured-icon"><i class='icon bx bxs-purchase-tag-alt fa-3x'></i>
+                <div class="info">
+                    <h4>Doanh số tháng này</h4>
+                    <p><b><span th:text="${countOrdersByMonth == null ? '0' : countOrdersByMonth} + ' đơn hàng'"></span>
+                        /
+                        <span th:text="${totalOrdersByMonth == null ? '0' : #numbers.formatDecimal(totalOrdersByMonth, 0,'POINT',0, 'POINT')} + ' VNĐ'"></span></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small primary coloured-icon"><i class='icon fa-3x bx bxs-chart'></i>
+                <div class="info">
+                    <h4>Doanh số hôm nay</h4>
+                    <p><b><span th:text="${countOrdersByDate == null ? '0' : countOrdersByDate} + ' đơn hàng'"></span> /
+                        <span th:text="${totalOrdersByDate == null ? '0' : #numbers.formatDecimal(totalOrdersByDate, 0,'POINT',0, 'POINT')} + ' VNĐ'"></span>
+                    </b></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small info coloured-icon"><i class='icon fa-3x bx bxs-user-badge'></i>
+                <div class="info">
+                    <h4>Doanh số năm nay</h4>
+                    <p><b><span th:text="${countOrdersByYear == null ? '0' : countOrdersByYear} + ' đơn hàng'"></span> /
+                        <span th:text="${totalOrdersByYear == null ? '0' : #numbers.formatDecimal(totalOrdersByYear, 0,'POINT',0, 'POINT')} + ' VNĐ'"></span></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small primary coloured-icon"><i class='icon bx bxs-user-account fa-3x'></i>
+                <div class="info">
+                    <h4>Số khách hàng</h4>
+                    <p><b><span th:text="${countCustomer == null ? '0' : countCustomer} + ' khách hàng'"></span></b></p>
+                    <p class="info-tong">Tổng số khách hàng được quản lý.</p>
+                </div>
+            </div>
+        </div>
+        <!-- col-6 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small info coloured-icon"><i class='icon bx bxs-data fa-3x'></i>
+                <div class="info">
+                    <h4>Tổng sản phẩm</h4>
+                    <p><b><span th:text="${countOrder == null ? '0' : countOrder} + ' sản phẩm'"></span></b></p>
+                    <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
+                </div>
+            </div>
+        </div>
+        <!-- col-6 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small warning coloured-icon"><i class='icon bx bxs-shopping-bags fa-3x'></i>
+                <div class="info">
+                    <h4>Tổng đơn hàng</h4>
+                    <p><b><span th:text="${countOrdersByMonth == null ? '0' : countOrdersByMonth} + ' đơn hàng'"></span></b>
+                    </p>
+                    <p class="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
+                </div>
+            </div>
+        </div>
+        <!-- col-6 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="widget-small danger coloured-icon"><i class='icon bx bxs-error-alt fa-3x'></i>
+                <div class="info">
+                    <h4>Sắp hết hàng</h4>
+                    <p><b><span th:text="${countProduct == null ? '0' : countProduct} + ' sản phẩm'"></span></b></p>
+                    <p class="info-tong">Số sản phẩm cảnh báo hết cần nhập thêm.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="tile">
+                <h3 class="tile-title">THỐNG KÊ DOANH SỐ</h3>
+                <div class="d-flex">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div style="width: 35px; height: 15px; background-color: brown;"></div> &nbsp; Số đơn hàng đã
+                        bán
+                    </div> &nbsp; &nbsp;
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div style="width: 35px; height: 15px; background-color: rgba(204, 102, 0)"></div> &nbsp; Số sản
+                        phẩm đã bán
+                    </div>
+                </div>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <canvas style="height: 550px !important;" class="embed-responsive-item" id="barChartDemo"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="row">-->
+<!--        <div class="col-md-12">-->
+<!--            <div class="tile">-->
+<!--                <div>-->
+<!--                    <h3 class="tile-title">SẢN PHẨM BÁN CHẠY</h3>-->
+<!--                </div>-->
+<!--                <div class="tile-body">-->
+<!--                    <table class="table table-hover table-bordered" id="sampleTable">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Mã sản phẩm</th>-->
+<!--                            <th>Tên sản phẩm</th>-->
+<!--                            <th>Giá tiền</th>-->
+<!--                            <th>Loại</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr th:each="h : ${hotSelling}">-->
+<!--                            <td th:text="${h[0]}"></td>-->
+<!--                            <td th:text="${h[1]}"></td>-->
+<!--                            <td th:text="${#numbers.formatDecimal(h[4], 0, 'POINT', 0, 'POINT')} + ' VNĐ'"></td>-->
+<!--                            <td th:text="${h[3]}"></td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div>
+                    <h3 class="tile-title">SẢN PHẨM SẮP HẾT HÀNG</h3>
+                </div>
+                <div class="tile-body">
+                    <table class="table table-hover table-bordered" id="sampleTable2">
+                        <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Màu sản phẩm</th>
+                            <th>Kích cỡ</th>
+                            <th>Số lượng</th>
+                            <th>Tình trạng</th>
+                            <th>Giá tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${listProduct}">
+                            <td th:text="${product.product.id}"></td>
+                            <td th:text="${product.product.name}"></td>
+                            <td th:text="${product.color.name}"></td>
+                            <td th:text="${product.size.name}"></td>
+                            <td th:text="${product.quantity}"></td>
+                            <td>
+                                <span th:if="${product.quantity != 0}" class="badge bg-success">Còn ít hàng</span>
+                                <span th:if="${product.quantity == 0}" class="badge bg-danger">Hết hàng</span>
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT')} + ' VNĐ'"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Essential javascripts for application to work-->
+<script src="/admin/doc/js/jquery-3.2.1.min.js"></script>
+<script src="/admin/doc/js/popper.min.js"></script>
+<script src="/admin/doc/js/bootstrap.min.js"></script>
+<script src="/admin/doc/js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="/admin/doc/js/plugins/pace.min.js"></script>
+<!-- Data table plugin-->
+<script type="text/javascript" src="/admin/doc/js/plugins/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/admin/doc/js/plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+<script type="text/javascript">$('#sampleTable2').DataTable();</script>
+<!-- Page specific javascripts-->
+<script type="text/javascript" src="/admin/doc/js/plugins/chart.js"></script>
+<script th:inline="javascript">
+    //Nhận dữ liệu từ mảng thống kê số đơn hàng
+    var soDonHang = /*[[${thongkedonhang}]]*/ null;
+    var donhang = [];
+    //Duyệt qua vòng lặp để lấy ra các phần tử ghi số liệu
+    for (var i = 0; i < soDonHang.length; i++) {
+        donhang.push(soDonHang[i][1])
+    }
+
+    //Tương tự ở trên
+    var soSanPham = /*[[${thongKeSoSanPham}]]*/ null;
+    var sanpham = [];
+
+    for (var i = 0; i < soSanPham.length; i++) {
+        sanpham.push(soSanPham[i][1])
+    }
+
+    var data = {
+        labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        datasets: [{
+            label: "Số đơn hàng",
+            fillColor: "rgba(153, 0, 0)",
+            strokeColor: "rgb(120, 64, 59)",
+            pointColor: "rgb(120, 64, 59)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "green",
+            data: donhang
+        },
+            {
+                label: "Số sản phẩm",
+                fillColor: "rgba(204, 102, 0)",
+                strokeColor: "rgb(220, 64, 59)",
+                pointColor: "black",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "green",
+                data: sanpham
+            }
+        ]
+    };
+    var ctxb = $("#barChartDemo").get(0).getContext("2d");
+    var barChart = new Chart(ctxb).Bar(data);
+</script>
+<!-- Google analytics script-->
+<script type="text/javascript">
+    if (document.location.hostname == 'pratikborsadiya.in') {
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-72504830-1', 'auto');
+        ga('send', 'pageview');
+    }
+</script>
+</body>
+</html>

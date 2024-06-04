@@ -1,0 +1,199 @@
+.Choicefile {
+    display: block;
+    background: #14142B;
+    border: 1px solid #fff;
+    color: #fff;
+    width: 150px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 0px;
+    border-radius: 5px;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+}
+
+.Choicefile:hover {
+    text-decoration: none;
+    color: white;
+}
+
+#uploadfile,
+.removeimg {
+    display: none;
+}
+
+#thumbbox {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.removeimg {
+    height: 25px;
+    position: absolute;
+    background-repeat: no-repeat;
+    top: 5px;
+    left: 5px;
+    background-size: 25px;
+    width: 25px;
+    /* border: 3px solid red; */
+    border-radius: 50%;
+
+}
+
+.removeimg::before {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    content: '';
+    border: 1px solid red;
+    background: red;
+    text-align: center;
+    display: block;
+    margin-top: 11px;
+    transform: rotate(45deg);
+}
+
+.removeimg::after {
+    /* color: #FFF; */
+    /* background-color: #DC403B; */
+    content: '';
+    background: red;
+    border: 1px solid red;
+    text-align: center;
+    display: block;
+    transform: rotate(-45deg);
+    margin-top: -2px;
+}
+
+#thumbbox {
+    overflow: auto;
+}
+
+.image-item {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.thumbimage {
+    max-width: 150px;
+    max-height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.image-product-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+.removeimg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #fff;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tile {
+    margin-bottom: 0;
+}
+
+.icon-button {
+    color: #0091ff;
+    transition: color 0.3s;
+    font-size: 45px;
+}
+
+.icon-button:hover {
+    color: #0066cc;
+}
+
+.thead_tr, .tfoot_tr {
+    background-color: #ef5e1e;
+    color: white;
+}
+
+.custom-switch .custom-control-input:checked + .custom-control-label::before {
+    background-color: #00bb00;
+}
+
+.stt, .anh, .so_luong_ton, .trang_thai, .tinh_nang {
+    text-align: center;
+}
+
+.ten_san_pham, .mo_ta {
+    text-align: left;
+}
+
+.anh img {
+    max-width: 120px;
+    max-height: 150px;
+}
+
+/* CSS cho nút toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #32ff32;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+.modal-header {
+    border-bottom: 1px solid #ccc;
+}

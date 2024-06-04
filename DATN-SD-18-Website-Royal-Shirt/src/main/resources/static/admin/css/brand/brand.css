@@ -1,0 +1,94 @@
+.icon-button {
+    color: #0091ff;
+    transition: color 0.3s;
+    font-size: 45px;
+}
+
+.icon-button:hover {
+    color: #0066cc;
+}
+
+.thead_tr, .tfoot_tr {
+    background-color: #ef5e1e;
+    color: white;
+}
+
+.custom-switch .custom-control-input:checked + .custom-control-label::before {
+    background-color: #00bb00;
+}
+
+.stt, .trang_thai, .tinh_nang {
+    text-align: center;
+    justify-content: center;
+}
+
+.ten_thuong_hieu {
+    text-align: left;
+}
+
+/* CSS cho nút toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #32ff32;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.modal-header {
+    border-radius: 0px;
+    border-bottom: 2px solid #FFD43B;
+    margin-bottom: 10px;
+    margin-right: 15px;
+    margin-left: 15px;
+    padding-left: 0px;
+}
+
+.modal-title {
+    font-size: 22px;
+}

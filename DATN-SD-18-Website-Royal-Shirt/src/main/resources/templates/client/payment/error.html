@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin giao dịch</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/client/css/payment/payment.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img th:src="@{/image/error_icon.png}" alt="Success Icon">
+        <h2>Giao dịch thất bại</h2>
+    </div>
+    <div class="buttons">
+        <a th:href="@{/}" class="button home-button">Trang chủ</a>
+        <a th:href="@{/myOrder}" class="button order-button">My Order</a>
+    </div>
+</div>
+
+<script th:src="@{/client/js/payment/payment.js}"></script>
+</body>
+</html>

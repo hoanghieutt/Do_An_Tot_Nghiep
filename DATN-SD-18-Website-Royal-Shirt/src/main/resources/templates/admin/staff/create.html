@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/layout/head::head}"></head>
+
+<link rel="stylesheet" th:href="@{/admin/css/staff/staff.css}">
+
+<body onload="time()" class="app sidebar-mini rtl">
+
+<!-- Navbar-->
+<div th:replace="~{admin/layout/header::header}"></div>
+<!-- Sidebar menu-->
+<div th:replace="~{admin/layout/sidebar::sidebar}"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin/staffs}">Danh sách nhân viên</a></li>
+            <li class="breadcrumb-item"><a href="#">Thêm nhân viên</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <h3 class="tile-title text-center">Tạo mới nhân viên</h3>
+                <form id="staffForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Ảnh 3x4 nhân viên</label>
+                                <div id="myfileupload">
+                                    <input type="file" id="uploadfile" name="ImageUpload" onchange="readURL(this);"/>
+                                </div>
+                                <div id="thumbbox">
+                                    <img height="150" width="100" alt="Thumb image" id="thumbimage" style="display: none;"/>
+                                    <a class="removeimg" href="javascript:"></a>
+                                </div>
+                                <div id="boxchoice">
+                                    <a href="javascript:" class="Choicefile"><i class="fas fa-cloud-upload-alt"></i> Chọn ảnh</a>
+                                    <p style="clear:both"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Họ và tên</label>
+                                    <input class="form-control" type="text" required name="name" id="name">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Địa chỉ email</label>
+                                    <input class="form-control" type="text" required name="email" id="email">
+                                </div>
+                                <div class="form-group  col-md-6">
+                                    <label class="control-label">Số điện thoại</label>
+                                    <input class="form-control" type="text" required name="phone" id="phone">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Địa chỉ</label>
+                                    <input class="form-control" type="text" required name="address" id="address">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Mật khẩu</label>
+                                    <input class="form-control" type="password" required name="password" id="password">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="role" class="control-label">Chức vụ</label>
+                                    <div class="d-flex">
+                                        <select class="form-control" id="role" name="role">
+                                            <option value="" disabled selected hidden>-- Chọn chức vụ --</option>
+                                            <option th:each="role : ${listRole}"
+                                                    th:value="${role.id}"
+                                                    th:text="${role.name}"></option>
+                                        </select>
+                                        <a class="btn btn-primary btn-sm edit" type="button"
+                                                id="showModalRole"
+                                                style="margin-bottom: 26px; margin-top: 7px; margin-left: 4px;"
+                                                title="Thêm role">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <BR>
+                            <button class="btn btn-save" type="button" onclick="saveOrUpdateStaff()">Lưu lại</button>
+                            <a class="btn btn-cancel" data-dismiss="modal" id="closeModalStaff" href="#">Hủy bỏ</a>
+                            <BR>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Chức Vụ -->
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="form-group  col-md-12">
+                    <span class="thong-tin-thanh-toan">
+                        <h5 class="modal-title text-center">Thêm Chức Vụ</h5>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    <div class="form-group">
+                        <label for="roleName">Tên Chức Vụ:</label>
+                        <input type="text" class="form-control" id="roleName"
+                               required name="roleName"
+                               placeholder="Tên chức vụ...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveRole()">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModalRole">Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Chức Vụ -->
+
+<!-- Essential javascripts for application to work-->
+<div th:replace="~{admin/layout/script::script}"></div>
+<script th:src="@{/admin/js/staff/staff.js}"></script>
+<script th:src="@{/admin/js/role/role.js}"></script>
+</body>
+
+</html>

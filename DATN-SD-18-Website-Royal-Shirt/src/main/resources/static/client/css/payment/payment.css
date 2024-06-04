@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.header h2 {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    background: linear-gradient(to bottom, #2980b9, #6dd5fa);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.home-button:hover {
+    background: linear-gradient(to bottom, #6dd5fa, #2980b9);
+}
+
+.order-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    background: linear-gradient(to bottom, #40e0d0, #ff8c00);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.order-button:hover {
+    background: linear-gradient(to bottom, #ff8c00, #40e0d0);
+}
+
+

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+
+<link rel="stylesheet" th:href="@{/admin/css/discount/discount-detail.css}">
+
+<body onload="time()" class="app sidebar-mini rtl">
+<!-- Navbar-->
+<div th:replace="~{admin/layout/header :: header}"></div>
+<!-- Sidebar menu-->
+<div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Chi Tiết Giảm Giá</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="tile">
+                <h3 class="tile-title">Thông Tin Giảm Giá</h3>
+                <div class="tile-body">
+                    <form id="discountForm" th:object="${discount}" th:attr="discount-id=${discount.id}">
+                        <div class="form-group">
+                            <label for="discountName">Tên Giảm Giá:</label>
+                            <input type="text" class="form-control" id="discountName" th:field="*{name}"
+                                   placeholder="Tên giảm giá...">
+                        </div>
+                        <div class="form-group">
+                            <label for="discountDiscount">Phần Trăm Giảm(%):</label>
+                            <input type="number" class="form-control" id="discountDiscount" th:field="*{discount}"
+                                   placeholder="Phần trăm giảm...">
+                        </div>
+                        <div class="form-group">
+                            <label for="discountStartDate">Ngày Bắt Đầu:</label>
+                            <input type="date" class="form-control" id="discountStartDate" th:field="*{startDate}"
+                                   placeholder="Ngày bắt đầu...">
+                        </div>
+                        <div class="form-group">
+                            <label for="discountEndDate">Ngày Kết Thúc:</label>
+                            <input type="date" class="form-control" id="discountEndDate" th:field="*{endDate}"
+                                   placeholder="Ngày kết thúc...">
+                        </div>
+                        <a class="btn btn-success" onclick="saveDiscount()">Lưu</a>
+                        <a class="btn btn-cancel" th:href="@{/admin/discount}">Quay lại</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal ListProductNoneDiscount -->
+        <div class="modal fade" id="NoneDiscountModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <h4 class="tile-title title-modal">Danh Sách Chưa Giảm Giá - Hết Hạn</h4>
+                    <div class="modal-body">
+                        <!-- Table -->
+                        <table class="table table-hover table-bordered js-copytextarea" cellpadding="0"
+                               cellspacing="0"
+                               border="0"
+                               id="sampleTableNoneDiscount">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th class="stt" width="20">STT</th>
+                                <th class="ten_san_pham" width="250">Tên Sản Phẩm</th>
+                                <th class="anh">Ảnh</th>
+                                <th class="so_luong_ton" width="100">Số lượng tồn</th>
+                                <th class="tinh_nang" width="90">Tính Năng</th>
+                            </tr>
+                            </thead>
+
+                            <tbody th:if="${listNoneDiscount.empty}">
+                            <tr>
+                                <td colspan="6" class="text-center">Danh sách trống!</td>
+                            </tr>
+                            </tbody>
+
+                            <tbody>
+                            <tr th:each="product, index : ${listNoneDiscount}">
+                                <td>
+                                    <input type="checkbox" class="cart-checkbox-add" th:value="${product.id}"/>
+                                </td>
+                                <td class="stt" th:text="${index.index + 1}"></td>
+                                <td class="ten_san_pham" th:text="${product.name}"></td>
+                                <td class="anh anh_img"><img th:src="${product.image}" alt="Hình ảnh sản phẩm"></td>
+                                <td class="so_luong_ton" th:utext="${product.quantity}"></td>
+                                <td class="table-td-center tinh_nang">
+                                    <a class="btn btn-success btn-sm edit" type="button"
+                                       th:attr="data-product-id=${product.id},id=#{${product.id}}"
+                                       onclick="setDiscount(this)"><i class="fa-solid fa-plus"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="form-group modal-footer">
+                            <button class="btn btn-secondary col-md-2" onclick="setDiscountAll()">Áp dụng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="tile">
+                <h3 class="tile-title">Danh Sách Áp Dụng</h3>
+                <a class="btn btn-success" id="showFormNoneDiscount"><i class="fa-solid fa-plus fa-xl"></i></a>
+                <div class="tile-body">
+                    <!-- Table -->
+                    <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0"
+                           border="0"
+                           id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="stt" width="20">STT</th>
+                            <th class="ten_san_pham" width="250">Tên Sản Phẩm</th>
+                            <th class="anh">Ảnh</th>
+<!--                            <th class="mo_ta" width="250">Mô Tả</th>-->
+                            <th class="so_luong_ton" width="90">Số Lượng Tồn</th>
+                            <th class="tinh_nang" width="90">Tính Năng</th>
+                        </tr>
+                        </thead>
+
+                        <tbody th:if="${lists.empty}">
+                        <tr>
+                            <td colspan="7" class="text-center">Danh sách trống!</td>
+                        </tr>
+                        </tbody>
+
+                        <tbody>
+                        <tr th:each="product, index : ${lists}">
+                            <td>
+                                <input type="checkbox" class="cart-checkbox-remove" th:value="${product.id}"/>
+                            </td>
+                            <td class="stt" th:text="${index.index + 1}"></td>
+                            <td class="ten_san_pham" th:text="${product.name}"></td>
+                            <td class="anh"><img th:src="${product.image}" alt="Hình ảnh sản phẩm"></td>
+<!--                            <td class="mo_ta" th:utext="${product.description}"></td>-->
+                            <td class="so_luong_ton" th:text="${product.quantity}"></td>
+                            <td class="table-td-center tinh_nang">
+                                <button class="btn btn-outline-danger btn-sm edit" type="button"
+                                        th:attr="data-product-id=${product.id},id=#{${product.id}}"
+                                        onclick="removeDiscountFromProduct(this)"><i class="fa-solid fa-trash"></i></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group modal-footer" style="padding-right: 0px">
+                        <button class="btn btn-danger col-md-2" onclick="removeDiscountAll()">Gỡ giảm giá</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div th:replace="~{admin/layout/script :: script}"></div>
+<script th:src="@{/admin/js/discount/discount-detail.js}"></script>
+</body>
+
+</html>

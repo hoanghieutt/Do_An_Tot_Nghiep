@@ -1,0 +1,119 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar">
+    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+    <aside class="app-sidebar">
+        <div class="app-sidebar__user">
+            <img class="app-sidebar__user-avatar"
+                 th:src="${session.staff.avatar}" width="50px"
+                 alt="User Image">
+            <div>
+                <p class="app-sidebar__user-name"><b>[[${session.staff.name}]]</b></p>
+                <p class="app-sidebar__user-designation">Chào mừng bạn trở lại</p>
+            </div>
+        </div>
+        <hr>
+        <div th:if="${session.staff.role.id == 1}">
+            <ul class="app-menu">
+                <li>
+                    <a class="app-menu__item haha" th:href="@{/admin/counter}">
+                        <i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item active" th:href="@{/admin/revenue}">
+                        <i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item " th:href="@{/admin/staffs}">
+                        <i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/customers}">
+                        <i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/product}">
+                        <i class='app-menu__icon bx bxs-t-shirt'></i>
+                        <span class="app-menu__label">Quản lý sản phẩm</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/category}">
+                        <i class='app-menu__icon bx bx-category-alt'></i>
+                        <span class="app-menu__label">Quản lý Danh Mục</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/brand}">
+                        <i class="app-menu__icon fa-regular fa-copyright"></i>
+                        <span class="app-menu__label">Quản lý Thương Hiệu</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/material}">
+                        <i class="app-menu__icon fa-solid fa-droplet"></i>
+                        <span class="app-menu__label">Quản lý Chất Liệu</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/color}">
+                        <i class='app-menu__icon bx bx-palette'></i>
+                        <span class="app-menu__label">Quản lý Màu Sắc</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/size}">
+                        <i class="app-menu__icon fa-regular fa-expand"></i>
+                        <span class="app-menu__label">Quản lý Kích Thước</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/discount}">
+                        <i class='app-menu__icon bx bxs-discount'></i>
+                        <span class="app-menu__label">Quản lý Giảm Giá</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/oder}">
+                        <i class='app-menu__icon bx bx-task'></i>
+                        <span class="app-menu__label">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${session.staff.role.id == 2}">
+            <ul class="app-menu">
+                <li>
+                    <a class="app-menu__item haha" th:href="@{/admin/counter}">
+                        <i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item active" th:href="@{/admin/revenue}">
+                        <i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/oder}">
+                        <i class='app-menu__icon bx bx-task'></i>
+                        <span class="app-menu__label">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" th:href="@{/admin/customers}">
+                        <i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+</div>

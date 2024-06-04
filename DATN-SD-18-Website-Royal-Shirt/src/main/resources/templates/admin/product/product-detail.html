@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/layout/head :: head}"></head>
+
+<link rel="stylesheet" th:href="@{/admin/css/product/product-detail.css}">
+
+<body onload="time()" class="app sidebar-mini rtl">
+<!-- Navbar-->
+<div th:replace="~{admin/layout/header :: header}"></div>
+<!-- Sidebar menu-->
+<div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+<main class="app-content">
+    <div class="app-title">
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item active"><a href="#"><b>Danh Sách Biến Thể Sản Phẩm</b></a></li>
+        </ul>
+        <div id="clock"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <h3 class="tile-title">Thông tin Sản Phẩm</h3>
+                <div class="tile-body">
+                    <form class="row">
+                        <!-- ID Sản Phẩm -->
+                        <div class=" col-md-12">
+                            <label class="control-label">ID sản phẩm: </label>
+                            <label id="product-id" th:attr="data-product-id=${product.id}"
+                                   th:text="${product.id}">
+                            </label>
+                        </div>
+
+                        <!-- Tên Sản Phẩm -->
+                        <div class=" col-md-12">
+                            <label class="control-label">Tên sản phẩm: </label>
+                            <label th:text="${product.name}"></label>
+                        </div>
+
+                        <!-- Ảnh Sản Phẩm -->
+                        <div class=" col-md-12">
+                            <label class="control-label">Ảnh sản phẩm:</label>
+                            <div id="thumbbox" class="d-flex">
+
+                            </div>
+                        </div>
+
+                        <!-- Số lượng -->
+                        <div class="col-md-12">
+                            <label class="control-label">Thống kê số lượng:</label>
+
+                            <!-- Số lượng thông qua màu -->
+                            <div class="d-flex row-quantity">
+                                <div class="col-md-2 color-quantity">
+                                    <select class="form-control" id="select-color-quantity"
+                                            onchange="getQuantityByColor(this)">
+                                        <option value="" disabled selected hidden>Chọn màu</option>
+                                        <option th:each="color : ${listColor}" th:value="${color.id}"
+                                                th:text="${color.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 div-quantity" id="div-quantity-color">
+                                    <label id="label-quantity-color" class="label-quantity"></label>
+                                </div>
+                            </div>
+
+                            <!-- Số lượng thông qua kích thước -->
+                            <div class="d-flex row-quantity">
+                                <div class="col-md-2 color-quantity">
+                                    <select class="form-control" id="select-size-quantity"
+                                            onchange="getQuantityBySize(this)">
+                                        <option value="" disabled selected hidden>Chọn kích thước</option>
+                                        <option th:each="size : ${listSize}" th:value="${size.id}"
+                                                th:text="${size.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 div-quantity" id="div-quantity-size">
+                                    <label id="label-quantity-size" class="label-quantity"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <a class="btn btn-cancel" th:href="@{/admin/product}">Quay lại</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+
+                    <div class="row element-button">
+                        <div class="col-sm-2">
+                            <a class="btn btn-add btn-sm" id="showFormProductDetailAdd" title="Thêm"><i
+                                    class="fas fa-plus"></i>
+                                Tạo mới</a>
+                        </div>
+                    </div>
+
+                    <!-- Modal Update Biến Thể -->
+                    <div class="modal fade" id="UpdateProductDetailModal" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Chỉnh sửa thông tin Biến Thể</h5>
+                                </div>
+                                <div class="row modal-body ">
+                                    <!--Màu Sắc - Kích Thước-->
+                                    <div class="form-group col-md-12 product-detail-infor">
+                                        <label class="control-label" id="product-detail-color">Màu Sắc: </label>
+                                        <br>
+                                        <label class="control-label" id="product-detail-size">Kích Thước: </label>
+                                    </div>
+
+<!--                                    &lt;!&ndash;Trọng Lượng&ndash;&gt;-->
+<!--                                    <div class="form-group col-md-4">-->
+<!--                                        <label class="control-label">Trọng Lượng (Gram)</label>-->
+<!--                                        <input class="form-control" type="number" id="product-detail-weight" min="0">-->
+<!--                                    </div>-->
+
+                                    <!--Số Lượng-->
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Số Lượng</label>
+                                        <input class="form-control" type="number" id="product-detail-quantity" min="0">
+                                    </div>
+
+                                    <!--Giá-->
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Giá (VNĐ)</label>
+                                        <input class="form-control" type="number" id="product-detail-price" min="0">
+                                    </div>
+
+                                </div>
+                                <div class="form-group modal-footer">
+                                    <button type="button" class="btn btn-success" onclick="saveUpdate()">Lưu
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            id="closeFormProductDetailUpdate">Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Add Biến Thể -->
+                    <div class="modal fade" id="AddProductDetailModal" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Thêm Biến Thể</h5>
+                                </div>
+                                <div class="row modal-body ">
+                                    <!--Màu Sắc-->
+                                    <div class="form-group col-md-6">
+                                        <label for="select-color" class="control-label">Màu Sắc</label>
+                                        <div class="d-flex">
+                                            <select class="form-control" id="select-color" onchange="getSize(this)">
+                                                <option value="" disabled selected hidden>-- Chọn màu sắc --</option>
+                                                <option th:each="color : ${listColor}" th:value="${color.id}"
+                                                        th:text="${color.name}"></option>
+                                            </select>
+                                            <button id="showFormColor" class="btn add-button" type="button"><i
+                                                    class="fa-solid fa-plus fa-2xl add-icon"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <!--Kích Thước-->
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Kích Thước</label>
+                                        <div class="d-flex">
+                                            <select class="form-control" id="select-size"
+                                                    placeholder="Chọn kích thước...">
+                                                <option value="" disabled selected hidden>-- Chọn Kích Thước --</option>
+                                            </select>
+                                            <button id="showFormSize" class="btn add-button" type="button"><i
+                                                    class="fa-solid fa-plus fa-2xl add-icon"></i></button>
+                                        </div>
+                                    </div>
+
+<!--                                    &lt;!&ndash;Trọng Lượng&ndash;&gt;-->
+<!--                                    <div class="form-group col-md-4">-->
+<!--                                        <label class="control-label">Trọng Lượng (Gram)</label>-->
+<!--                                        <input class="form-control" type="number" id="add-product-detail-weight">-->
+<!--                                    </div>-->
+
+                                    <!--Số Lượng-->
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Số Lượng</label>
+                                        <input class="form-control" type="number" id="add-product-detail-quantity">
+                                    </div>
+
+                                    <!--Giá-->
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Giá (VNĐ)</label>
+                                        <input class="form-control" type="number" id="add-product-detail-price">
+                                    </div>
+
+                                </div>
+                                <div class="form-group modal-footer">
+                                    <button type="button" class="btn btn-success" onclick="saveAdd()">Lưu
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            id="closeFormProductDetailAdd">Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0"
+                           border="0"
+                           id="sampleTable">
+                        <thead>
+                        <tr>0
+                            <th class="stt" width="30">STT</th>
+                            <th class="mau_sac">Màu Sắc</th>
+                            <th class="kich_thuoc">Kích Thước</th>
+<!--                            <th class="trong_luong" width="150">Trọng Lượng</th>-->
+                            <th class="so_luong" width="130">Số Lượng</th>
+                            <th class="gia_ban" width="220">Giá Bán</th>
+                            <th class="tinh_nang" width="110">Tính Năng</th>
+                        </tr>
+                        </thead>
+
+                        <tbody th:if="${lists.empty}">
+                        <tr>
+                            <td colspan="7" class="text-center">Danh sách trống!</td>
+                        </tr>
+                        </tbody>
+
+                        <tbody>
+                        <tr th:each="productDetail, index : ${lists}">
+                            <td class="stt" th:text="${index.index + 1}"></td>
+                            <td class="mau_sac" th:text="${productDetail.colorName}"></td>
+                            <td class="kich_thuoc" th:text="${productDetail.sizeName}"></td>
+<!--                            <td class="trong_luong" id="trong_luong"-->
+<!--                                th:text="${#numbers.formatDecimal((productDetail.weight), 0, 'POINT', 0, 'POINT')}"-->
+<!--                            ></td>-->
+                            <td class="so_luong" th:text="${productDetail.quantity}"></td>
+                            <td class="gia_ban" id="gia_ban"
+                                th:text="${#numbers.formatDecimal((productDetail.price), 0, 'POINT', 0, 'POINT')}"
+                            ></td>
+                            <td class="table-td-center tinh_nang">
+                                <button class="btn btn-primary btn-sm edit" type="button"
+                                        th:attr="data-product-detail-id=${productDetail.id},
+                                                 data-product-detail-color=${productDetail.colorName},
+                                                 data-product-detail-size=${productDetail.sizeName},
+                                                 id=#{${productDetail.id}}"
+                                        onclick="updateProductDetailForm(this)"><i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Màu Sắc -->
+<div class="modal fade" id="ColorModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm Màu Sắc</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form fields for color name and description go here -->
+                <form id="colorForm">
+                    <div class="form-group">
+                        <label for="colorName">Tên Màu Sắc:</label>
+                        <input type="text" class="form-control" id="colorName"
+                               name="colorName"
+                               placeholder="Tên màu sắc...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveColor()">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeFormColor">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Kích Thước -->
+<div class="modal fade" id="SizeModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm Kích Thước</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form fields for size name and description go here -->
+                <form id="sizeForm">
+                    <div class="form-group">
+                        <label for="sizeName">Kích Thước:</label>
+                        <input type="text" class="form-control" id="sizeName"
+                               name="sizeName"
+                               placeholder="Kích thước...">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeName">Dài Áo:</label>
+                        <input type="number" class="form-control" id="sizeShirtLength"
+                               name="sizeShirtLength"
+                               placeholder="Dài áo...">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeName">Ngang Áo:</label>
+                        <input type="number" class="form-control" id="sizeShirtWidth"
+                               name="sizeShirtWidth"
+                               placeholder="Ngang áo...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveSize()">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeFormSize">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{admin/layout/script :: script}"></div>
+<script th:src="@{/admin/js/product/product-detail.js}"></script>
+<script th:src="@{/admin/js/color/color.js}"></script>
+<script th:src="@{/admin/js/size/size.js}"></script>
+</body>
+
+</html>

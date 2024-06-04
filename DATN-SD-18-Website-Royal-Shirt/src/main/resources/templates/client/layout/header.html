@@ -1,0 +1,161 @@
+<header class="header-one header-two header-page" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+    <div class="header-top-two">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-12">
+                    <div class="middel-top">
+                        <div class="left floatleft">
+                            <p><i class="mdi mdi-clock"></i> Mon-Fri : 09:00-19:00</p>
+                        </div>
+                        <div class="center floatleft">
+                            <form>
+                                <input type="text" placeholder="Search..." name="keyword" th:value="${keyword}"/>
+                                <button type="submit"><i class="mdi mdi-magnify"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="middel-top clearfix">
+                        <ul class="clearfix right floatright">
+                            <li>
+                                <a href="#"><i class="mdi mdi-account"></i>
+                                    <th:block th:if="${session.customer != null}">
+                                        <span th:text="${session.customer.name}"></span>
+                                    </th:block>
+                                </a>
+                                <ul>
+                                    <th:block th:if="${session.customer == null}">
+                                        <li><a th:href="@{/loginPage}">Login</a></li>
+                                        <li><a th:href="@{/registerPage}">Registar</a></li>
+                                    </th:block>
+                                    <th:block th:if="${session.customer != null}">
+                                        <li><a th:href="@{/myPage}">My account</a></li>
+                                        <li><a th:href="@{/myOrder}">My order</a></li>
+                                        <li><a th:href="@{/logout}">Logout</a></li>
+                                    </th:block>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="mdi mdi-settings"></i></a>
+                            </li>
+                        </ul>
+<!--                        <div class="right floatright">-->
+<!--                            <form action="javascript:void(0)">-->
+<!--                                <button type="submit"><i class="mdi mdi-magnify"></i></button>-->
+<!--                                <input type="text" placeholder="Search within these results..."/>-->
+<!--                            </form>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="logo">
+                    <a th:href="@{/}"><img th:src="@{/client/img/logo2.webp}" alt="Sellshop"/></a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="header-middel">
+                    <div class="mainmenu">
+                        <nav>
+                            <ul>
+                                <li><a th:href="@{/}">Home</a></li>
+                                <li><a th:href="@{/products}">Shop</a>
+                                    <ul class="magamenu">
+                                        <li class="banner"><a th:href="@{/products}"><img
+                                                th:src="@{/client/img/maga1.webp}" alt=""/></a></li>
+                                        <li><h5>men’s wear</h5>
+                                            <ul>
+                                                <li><a href="#">Shirts & Top</a></li>
+                                                <li><a href="#">Shoes</a></li>
+                                                <li><a href="#">Dresses</a></li>
+                                                <li><a href="#">Shemwear</a></li>
+                                                <li><a href="#">Jeans</a></li>
+                                                <li><a href="#">Sweaters</a></li>
+                                                <li><a href="#">Jacket</a></li>
+                                                <li><a href="#">Men Watch</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><h5>women’s wear</h5>
+                                            <ul>
+                                                <li><a href="#">Shirts & Tops</a></li>
+                                                <li><a href="#">Shoes</a></li>
+                                                <li><a href="#">Dresses</a></li>
+                                                <li><a href="#">Shemwear</a></li>
+                                                <li><a href="#">Jeans</a></li>
+                                                <li><a href="#">Sweaters</a></li>
+                                                <li><a href="#">Jacket</a></li>
+                                                <li><a href="#">Women Watch</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="banner"><a th:href="@{/products}"><img
+                                                th:src="@{/client/img/maga2.webp}" alt=""/></a></li>
+                                    </ul>
+                                </li>
+                                <li><a th:href="@{/blog}">Blog</a></li>
+                                <li><a th:href="@{/about}">About</a></li>
+                                <li><a th:href="@{/contact}">Contact</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- mobile menu start -->
+                    <div class="mobile-menu-area">
+                        <div class="mobile-menu">
+                            <nav id="dropdown">
+                                <ul>
+                                    <li><a th:href="@{/}">Home</a></li>
+                                    <li><a th:href="@{/products}">Shop</a>
+                                        <ul>
+                                            <li><h5>men’s wear</h5>
+                                                <ul>
+                                                    <li><a href="#">Shirts & Top</a></li>
+                                                    <li><a href="#">Shoes</a></li>
+                                                    <li><a href="#">Dresses</a></li>
+                                                    <li><a href="#">Shemwear</a></li>
+                                                    <li><a href="#">Jeans</a></li>
+                                                    <li><a href="#">Sweaters</a></li>
+                                                    <li><a href="#">Jacket</a></li>
+                                                    <li><a href="#">Men Watch</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><h5>women’s wear</h5>
+                                                <ul>
+                                                    <li><a href="#">Shirts & Tops</a></li>
+                                                    <li><a href="#">Shoes</a></li>
+                                                    <li><a href="#">Dresses</a></li>
+                                                    <li><a href="#">Shemwear</a></li>
+                                                    <li><a href="#">Jeans</a></li>
+                                                    <li><a href="#">Sweaters</a></li>
+                                                    <li><a href="#">Jacket</a></li>
+                                                    <li><a href="#">Women Watch</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a th:href="@{/blog}">Blog</a></li>
+                                    <li><a th:href="@{/about}">About</a></li>
+                                    <li><a th:href="@{/contact}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cart-itmes">
+                    <a class="cart-itme-a" th:href="@{/cart}">
+                        <i class="mdi mdi-cart"></i>
+                    </a>
+<!--                    <div class="cartdrop">-->
+<!--                        <th:block th:if="${session.customer != null}">-->
+<!--                            <a class="goto" th:href="@{'/cart/' + ${session.customer.id}}">go to cart</a>-->
+<!--                        </th:block>-->
+<!--                        <a class="out-menu" th:href="@{/checkout}">Check out</a>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

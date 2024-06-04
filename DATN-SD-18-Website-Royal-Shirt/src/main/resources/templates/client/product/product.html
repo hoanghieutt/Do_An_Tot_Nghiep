@@ -1,0 +1,401 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{client/layout/head::head}"></head>
+
+<body>
+
+    <!-- header section start -->
+    <header th:replace="~{client/layout/header::header}"></header>
+    <!-- header section end -->
+    <!-- pages-title-start -->
+    <div class="pages-title section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="pages-title-text text-center">
+                        <h2>Product Grid View</h2>
+                        <ul class="text-left">
+                            <li><a th:href="@{/}">Home </a></li>
+                            <li><span> // </span>Shop</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- pages-title-end -->
+    <!-- collection section start -->
+    <section class="collection-area collection-area2 section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="single-colect banner collect-one">
+                        <a href="#"><img th:src="@{/client/img/collect/4.webp}" alt="" /></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="colect-text ">
+                        <h4><a href="#">Fashion Collection 2021</a></h4>
+                        <h5>big sale of the men 2021 fashion <br /> Up To 23% Off!</h5>
+                        <a href="#">Shop Now <i class="mdi mdi-arrow-right"></i></a>
+                    </div>
+                    <div class="collect-img banner margin single-colect">
+                        <a href="#"><img th:src="@{/client/img/collect/5.webp}" alt="" /></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="collect-img banner single-colect">
+                        <a href="#"><img th:src="@{/client/img/collect/6.webp}" alt="" /></a>
+                    </div>
+                    <div class="colect-text ">
+                        <h4><a href="#">Men’s Collection 2021</a></h4>
+                        <p>There are many variations of passages of Lorem Ipsum avalabbut the majority have suffered
+                            alteration in some form.</p>
+                        <a href="#">Shop Now <i class="mdi mdi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- collection section end -->
+    <!-- product-grid-view content section start -->
+    <section class="pages products-page section-padding-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-lg-3">
+                    <div class="sidebar left-sidebar">
+                        <div class="s-side-text">
+                            <div class="sidebar-title clearfix">
+                                <h4 class="floatleft">Categories</h4>
+                                <h5 class="floatright"><a href="#">All</a></h5>
+                            </div>
+                            <div class="categories left-right-p">
+                                <div class="panel-collapse collapse show" id="collapse1" data-bs-parent="#accordion">
+                                    <div class="normal-a" th:each="category : ${listCategory}">
+                                        <a href="#">[[${category.name}]]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="s-side-text">
+                            <div class="sidebar-title">
+                                <h4>price</h4>
+                            </div>
+                            <div class="range-slider clearfix">
+                                <form action="javascript:void(0)">
+                                    <label><span>You range</span> <input type="text" id="amount" readonly /></label>
+                                    <div id="slider-range"></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="s-side-text">
+                            <div class="sidebar-title clearfix">
+                                <h4 class="floatleft">brands</h4>
+                                <h5 class="floatright"><a href="#">All</a></h5>
+                            </div>
+                            <div class="brands-select clearfix">
+                                <ul>
+                                    <li th:each="brand : ${listBrand}">
+                                        <a href="#">[[${brand.name}]]</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="s-side-text">
+                            <div class="banner clearfix">
+                                <a href="#"><img th:src="@{/client/img/products/banner.webp}" alt="" /></a>
+                                <div class="banner-text">
+                                    <h2>best</h2> <br />
+                                    <h2 class="banner-brand">brand</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-lg-9">
+                    <div class="right-products">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="section-title clearfix">
+                                    <ul>
+                                        <li>
+                                            <ul class="nav-view nav">
+                                                <li><a class="active" data-bs-toggle="tab" href="#grid"> <i
+                                                            class="mdi mdi-view-module"></i> </a></li>
+                                                <li><a data-bs-toggle="tab" href="#list"> <i
+                                                            class="mdi mdi-view-list"></i> </a></li>
+                                            </ul>
+                                        </li>
+<!--                                        <li class="sort-by floatright" th:text="'Tổng ' + ${#lists.size(listProducts)} + ' sản phẩm'">-->
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="tab-content grid-content">
+                                <div class="tab-pane fade show active text-center" id="grid">
+                                    <div th:if="${listProducts != null}">
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-4 mb-4" th:each="product : ${listProducts}">
+                                                <form action="" method="post">
+                                                    <div class="single-product">
+                                                        <div class="product-img">
+                                                            <div class="pro-type">
+                                                                <span th:if="${product.discount != 0}" th:text="'-' + ${product.discount} + '%'"></span>
+                                                            </div>
+                                                            <a th:href="@{/single-product/{id}(id=${product.id})}">
+                                                                <img th:src="${product.image}" style="width:200px; height:300px;"
+                                                                     alt="Product Title" />
+                                                            </a>
+                                                            <div class="actions-btn">
+                                                                <a href="#"><i class="mdi mdi-cart"></i></a>
+                                                                <a href="#" data-bs-toggle="modal"
+                                                                   data-bs-target="#quick-view"><i class="mdi mdi-eye"></i></a>
+                                                                <a href="#"><i class="mdi mdi-heart"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-dsc">
+                                                            <p>
+                                                                <a th:href="@{/single-product/{id}(id=${product.id})}"
+                                                                >[[${product.name}]]</a>
+                                                            </p>
+                                                            <div class="ratting">
+                                                                <i class="mdi mdi-star"></i>
+                                                                <i class="mdi mdi-star"></i>
+                                                                <i class="mdi mdi-star"></i>
+                                                                <i class="mdi mdi-star-half"></i>
+                                                                <i class="mdi mdi-star-outline"></i>
+                                                            </div>
+                                                            <span th:text="${#numbers.formatDecimal((
+                                                            product.discount == 0 ?
+                                                            product.minPrice :
+                                                            (product.minPrice/100*(100 - product.discount))), 0, 'POINT', 0, 'POINT')} +
+                                                             ' - ' +
+                                                             ${#numbers.formatDecimal((product.discount == 0 ?
+                                                             product.maxPrice :
+                                                             (product.maxPrice/100*(100 - product.discount))), 0, 'POINT', 0, 'POINT')} + ' VNĐ'"></span>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${listProducts != null}">
+                                        <p>No products found.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pagnation-ul">
+                                    <ul class="clearfix">
+                                        <li th:if="${currentPage > 1}">
+                                            <a th:href="@{'?pageNo=' + ${currentPage - 1}}"><i
+                                                    class="mdi mdi-menu-left"></i></a>
+                                        </li>
+                                        <li th:each="i : ${#numbers.sequence(1, totalPage)}"
+                                            th:classappend="${currentPage == i ? 'active' : ''}">
+                                            <a th:href="@{${keyword != null && keyword != '' ? '?keyword=' + keyword +'&' : '?'} + 'pageNo=' + ${i}}"
+                                                th:text="${i}"></a>
+                                        </li>
+                                        <li th:if="${currentPage < totalPage}">
+                                            <a th:href="@{'?pageNo=' + ${currentPage + 1}}"><i
+                                                    class="mdi mdi-menu-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- product-grid-view content section end -->
+    <!-- quick view start -->
+    <div class="product-details quick-view modal animated zoomInUp" id="quick-view">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-table">
+                        <div class="d-tablecell">
+                            <div class="modal-dialog">
+                                <div class="main-view modal-content">
+                                    <div class="modal-footer" data-bs-dismiss="modal">
+                                        <span>x</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5 col-lg-4">
+                                            <div class="quick-image">
+                                                <div class="single-quick-image text-center">
+                                                    <div class="list-img">
+                                                        <div class="product-img tab-content">
+                                                            <div class="simpleLens-container tab-pane fade show"
+                                                                id="sin-1">
+                                                                <div class="pro-type">
+                                                                    <span>new</span>
+                                                                </div>
+                                                                <a class="simpleLens-image"
+                                                                    data-lens-image="/client/img/products/z1.webp"
+                                                                    href="#"><img
+                                                                        th:src="@{/client/img/products/z1.webp}" alt=""
+                                                                        class="simpleLens-big-image"></a>
+                                                            </div>
+                                                            <div class="simpleLens-container tab-pane active fade show"
+                                                                id="sin-2">
+                                                                <div class="pro-type sell">
+                                                                    <span>sell</span>
+                                                                </div>
+                                                                <a class="simpleLens-image"
+                                                                    data-lens-image="img/products/z2.webp" href="#"><img
+                                                                        th:src="@{/client/img/products/z2.webp}" alt=""
+                                                                        class="simpleLens-big-image"></a>
+                                                            </div>
+                                                            <div class="simpleLens-container tab-pane fade show"
+                                                                id="sin-3">
+                                                                <div class="pro-type">
+                                                                    <span>-15%</span>
+                                                                </div>
+                                                                <a class="simpleLens-image"
+                                                                    data-lens-image="img/products/z3.webp" href="#"><img
+                                                                        th:src="@{/client/img/products/z3.webp}" alt=""
+                                                                        class="simpleLens-big-image"></a>
+                                                            </div>
+                                                            <div class="simpleLens-container tab-pane fade show"
+                                                                id="sin-4">
+                                                                <div class="pro-type">
+                                                                    <span>new</span>
+                                                                </div>
+                                                                <a class="simpleLens-image"
+                                                                    data-lens-image="img/products/z4.webp" href="#"><img
+                                                                        th:src="@{/client/img/products/z4.webp}" alt=""
+                                                                        class="simpleLens-big-image"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="quick-thumb">
+                                                    <ul class="product-slider nav">
+                                                        <li><a data-bs-toggle="tab" href="#sin-1"> <img
+                                                                    th:src="@{/client/img/products/s1.webp}"
+                                                                    alt="quick view" /> </a></li>
+                                                        <li><a class="active" data-bs-toggle="tab" href="#sin-2"> <img
+                                                                    th:src="@{/client/img/products/s2.webp}"
+                                                                    alt="small image" /> </a></li>
+                                                        <li><a data-bs-toggle="tab" href="#sin-3"> <img
+                                                                    th:src="@{/client/img/products/s3.webp}"
+                                                                    alt="small image" /> </a></li>
+                                                        <li><a data-bs-toggle="tab" href="#sin-4"> <img
+                                                                    th:src="@{/client/img/products/s4.webp}"
+                                                                    alt="small image" /> </a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7 col-lg-8">
+                                            <div class="quick-right">
+                                                <div class="list-text">
+                                                    <h3>men’s White t-shirt</h3>
+                                                    <span>Summer men’s fashion</span>
+                                                    <div class="ratting floatright">
+                                                        <p>( 27 Rating )</p>
+                                                        <i class="mdi mdi-star"></i>
+                                                        <i class="mdi mdi-star"></i>
+                                                        <i class="mdi mdi-star"></i>
+                                                        <i class="mdi mdi-star-half"></i>
+                                                        <i class="mdi mdi-star-outline"></i>
+                                                    </div>
+                                                    <h5><del>$79.30</del> $69.30</h5>
+                                                    <p>There are many variations of passages of Lorem Ipsum available,
+                                                        but the majority have be suffered alteration in some form, by
+                                                        injected humour, or randomised words which donot look even
+                                                        slightly believable. If you are going to use a passage of Lorem
+                                                        Ipsum, you neede be sure there isn't anything embarrassing
+                                                        hidden in the middle of text. Lorem Ipsum is simply dummy text
+                                                        of the printing and typesetting industry.</p>
+                                                    <div class="all-choose">
+                                                        <div class="s-shoose">
+                                                            <h5>Color</h5>
+                                                            <div class="color-select clearfix">
+                                                                <span></span>
+                                                                <span class="outline"></span>
+                                                                <span></span>
+                                                                <span></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="s-shoose">
+                                                            <h5>size</h5>
+                                                            <div class="size-drop">
+                                                                <div class="btn-group">
+                                                                    <button type="button" class="btn">XL</button>
+                                                                    <button type="button" class="btn dropdown-toggle"
+                                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                        <span class=""><i
+                                                                                class="mdi mdi-chevron-down"></i></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                        <li><a href="#">Xl</a></li>
+                                                                        <li><a href="#">SL</a></li>
+                                                                        <li><a href="#">S</a></li>
+                                                                        <li><a href="#">L</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="s-shoose">
+                                                            <h5>qty</h5>
+                                                            <form action="#">
+                                                                <div class="plus-minus">
+                                                                    <a class="dec qtybutton">-</a>
+                                                                    <input type="text" value="02" name="qtybutton"
+                                                                        class="plus-minus-box">
+                                                                    <a class="inc qtybutton">+</a>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-btn">
+                                                        <a href="#">add to cart</a>
+                                                        <a href="#">wishlist</a>
+                                                        <a href="#">zoom</a>
+                                                    </div>
+                                                    <div class="share-tag clearfix">
+                                                        <ul class="blog-share floatleft">
+                                                            <li>
+                                                                <h5>share </h5>
+                                                            </li>
+                                                            <li><a href="#"><i class="mdi mdi-facebook"></i></a></li>
+                                                            <li><a href="#"><i class="mdi mdi-twitter"></i></a></li>
+                                                            <li><a href="#"><i class="mdi mdi-linkedin"></i></a></li>
+                                                            <li><a href="#"><i class="mdi mdi-vimeo"></i></a></li>
+                                                            <li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
+                                                            <li><a href="#"><i class="mdi mdi-instagram"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- quick view end -->
+    <!-- footer section start -->
+    <div th:replace="~{client/layout/footer::footer}"></div>
+    <!-- footer section end -->
+
+    <!-- all js here -->
+    <!-- jquery latest version -->
+    <div th:replace="~{client/layout/script::script}"></div>
+</body>
+
+</html>
